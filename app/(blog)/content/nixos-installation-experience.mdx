@@ -1,0 +1,235 @@
+---
+title: NixOS installation experience
+description: From a `common` Linux distro to NixOS
+image: 'blog/NixOS-installation-experience'
+pubDate: 2025-02-13
+---
+
+Installing NixOS is surprisingly effortless. Both the Graphical and Minimal
+ISOs offer a smooth onboarding process.
+
+If you're new to Linux terminal, I suggest starting with a graphical ISO.
+The NixOS graphical installer is a great option. While the Minimal ISO is
+ideal for advanced users, any public ISO from the NixOS download page will
+work for the installation process.
+
+In this tutorial, I'll guide you through the process of installing NixOS
+from the Minimal ISO and creating a reproducible Nix Flake.
+
+After booting into NixOS's Live environment, the terminal provides
+instructions on how to connect to a wireless network. While this might
+seem straightforward—especially since most users are familiar with
+NetworkManager many "advanced" distro installations often rely on using
+`wpa_supplicant` for wireless networks.
+
+Before you begin, you may want to adjust the console font.
+
+```bash
+# ter-112n, sun12x22 or use the -d flag to doble the size
+setfont ter-116b
+```
+
+**Note**: Unlike other Linux distributions, NixOS does not expose the
+/usr/share/fonts/ directory.
+
+## Using wpa_passphrase
+
+There are many ways to configure a network, but using wpa_supplicant is
+one of the simplest methods.
+
+```bash
+wpa_passphrase ESSID | sudo tee /etc/wpa_supplicant.conf
+```
+
+By running `wpa_passphrase`, you can generate the configuration for
+wpa_supplicant. Then, enter your Wi-Fi network's SSID and passphrase,
+and restart the service with systemctl.
+
+**Note**: To get the ESSID (Extended Service Set Identifier) run `iw dev`.
+
+```bash
+iw dev | grep Interface
+  Interface # wlp2s0, wlp12s0, wlan0..
+
+# replace interface with your device
+iw dev interface scan | grep SSID
+
+wpa_passphrase ESSID | sudo tee /etc/wpa_supplicant.conf
+#reading_passphrase from stdin
+network={
+  ssid="ESSID"
+  #psk="PASSPHRASE"
+  psk=dd34ad23098d17da4a43fb886126a6702172563b8e1daad3d102a9c0f8ce18f7
+}
+
+systemctl restart wpa_supplicant.service
+```
+
+## Using wpa_cli
+
+This is the method recommended in the NixOS manual.
+
+```bash
+> add_network
+0
+> set_network 0 ssid "myhomenetwork"
+OK
+> set_network 0 psk "mypassword"
+OK
+> set_network 0 key_mgmt WPA-PSK
+OK
+> enable_network 0
+OK
+```
+
+## Partitioning the disk
+
+You can use cfdisk to partition the disk. For UEFI systems, make sure to select
+the GPT (GUID Partition Table) label type. After partitioning, you can verify
+the results by running lsblk.
+
+For the root partition, use either ext4 or btrfs. One of the key advantages of
+btrfs is its support for subvolumes and snapshots.
+
+```bash
+mkfs.vfat -F32 -n BOOT /dev/nvme0n1p1
+mkfs.btrfs -L NixOS /dev/nvme0n1p2
+
+mount /dev/disk/by-label/NixOS /mnt
+btrfs subvolume create /mnt{@,@nix,@home,@tmp}
+umount /mnt
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@ /dev/disk/by-label/NixOS /mnt
+mkdir -p /mnt/{nix,home,tmp,boot}
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@nix /dev/disk/by-label/NixOS /mnt/nix
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@home /dev/disk/by-label/NixOS /mnt/home
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@tmp /dev/disk/by-label/NixOS /mnt/tmp
+mount /dev/disk/by-label/BOOT /mnt/boot
+```
+
+If you need a swapfile.
+
+```bash
+dd if=/dev/zero of=/mnt/var/swapfile bs=1G count=4
+chmod 600 /mnt/var/swapfile
+mkswap /mnt/var/swapfile
+swapon /mnt/var/swapfile
+
+# btrfs filesystem
+btrfs filesystem mkswapfile -s 4g -U clear /mnt/var/swapfile
+```
+
+## NixOS configuration
+
+Run sudo nixos-generate-config --root /mnt to generate a configuration file
+located at /mnt/etc/nixos/configuration.nix, along with a
+hardware-configuration module for your system.
+
+Read the comments carefully, and be cautious when editing the
+hardware configuration.
+
+### configuration.nix
+
+```nix file=configuration.nix
+{
+  pkgs,
+  lib,
+  ...
+}:
+{
+  imports = [ ./hardware-configuration.nix ];
+
+  loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
+
+  networking.hostName = "nixos";
+  networking.networkmanager.enable = true;
+
+  time.timeZone = "America/New_York";
+
+  users.users.alice = {
+    description = "alice";
+    isNormalUser = true;
+    shell = pkgs.fish;
+    extraGroups = [
+      "wheel"
+      "audio"
+      "networkmanager"
+    ];
+  };
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      X11Forwarding = false;
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+
+  neovim = {
+    enable = true;
+    defaultEditor = true;
+  };
+
+  environment.systemPackages = with pkgs; [
+    wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
+    mako # notification system developed by swaywm maintainer
+  ];
+
+  # Enable the gnome-keyring secrets vault.
+  # Will be exposed through DBus to programs willing to store secrets.
+  services.gnome.gnome-keyring.enable = true;
+
+  # enable Sway window manager
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true;
+  };
+
+  system.stateVersion = "24.05";
+}
+```
+
+## Nix Flake
+
+To use Nix Flakes, you must enable the feature in your config.
+
+```nix file=configuration.nix
+{
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    use-xdg-base-directories = true;
+  };
+}
+```
+
+```nix file=flake.nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  };
+
+  outputs =
+    { self, nixpkgs, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in
+    {
+      nixosConfigurations.apocrypha = nixpkgs.lib.nixosSystem {
+        inherit system pkgs lib;
+        modules = [ ./configuration.nix ];
+      };
+    };
+}
+```
+
+After the configuration is done run `sudo nixos-install --flake .#<hostname>`
+in a shell to start the installation process.
