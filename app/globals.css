@@ -12,9 +12,16 @@
   --color-dn-border-100: oklch(from var(--dn-foreground-200) l c h / 20%);
   --color-dn-border-200: oklch(from var(--dn-foreground-200) l c h / 8%);
   --color-dn-primary-200: var(--dn-primary-200);
+  --color-dn-accent-100: var(--dn-accent-100);
+  --color-dn-accent-200: var(--dn-accent-200);
 }
 
 @layer theme {
+  ::selection {
+    color: var(--color-dn-background-200);
+    background-color: var(--dn-foreground-200);
+  }
+
   :root {
     @apply scheme-light;
     --dn-background-100: oklch(94.01% 0 0);
@@ -31,6 +38,7 @@
 
   [accent-color="blue"] {
     --dn-primary-200: oklch(65.04% 0.2067 251.63);
+    --dn-accent-200: oklch(65.04% 0.2067 251.63);
   }
 
   .dark .shiki,
