@@ -5,9 +5,9 @@ on:
     types: [opened, synchronize, edited]
 
 jobs:
-  dependabot:
+  squash-to-master:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'app/dependabot'
+    if: ${{contains(fromJSON('["app/dependabot", "app/github-actions"]'), github.event.pull_request.user.login)}}
     steps:
       - name: Squash to master
         env:
