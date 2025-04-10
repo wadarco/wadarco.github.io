@@ -14,6 +14,9 @@
   --color-dn-primary-200: var(--dn-primary-200);
   --color-dn-accent-100: var(--dn-accent-100);
   --color-dn-accent-200: var(--dn-accent-200);
+
+  --font-MonaSans: var(--font-MonaSans);
+  --font-HubotSans: var(--font-HubotSans);
 }
 
 @layer theme {

@@ -1,14 +1,20 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Hubot_Sans, Mona_Sans } from 'next/font/google'
 import './globals.css'
 import clsx from 'clsx'
 import Header from './components/Header.tsx'
 import ThemeScript from './theme/ThemeScript.tsx'
 
-const inter = Inter({
+const mona_sans = Mona_Sans({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-MonaSans',
+})
+
+const hubot_sans = Hubot_Sans({
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-HubotSans',
 })
 
 type Props = Readonly<{
@@ -31,8 +37,9 @@ export default ({ children }: Props) => (
   >
     <body
       className={clsx(
-        'grid min-h-screen grid-cols-1 grid-rows-[1fr_auto]',
-        `${inter.className} bg-dn-background-200 text-dn-foreground-200 antialiased`,
+        'grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-dn-background-200',
+        'font-MonaSans text-dn-foreground-200 antialiased',
+        `${mona_sans.variable} ${hubot_sans.variable}`,
       )}
     >
       <ThemeScript />

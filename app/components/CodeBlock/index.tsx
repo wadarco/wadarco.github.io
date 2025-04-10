@@ -27,7 +27,7 @@ export default function CodeBlock({
     <div
       className={clsx(
         'group my-8 prose-pre:my-0 prose-pre:rounded-none border-dn-border-200',
-        'overflow-hidden rounded-md border',
+        'overflow-hidden rounded-md border font-HubotSans',
         className,
       )}
     >
