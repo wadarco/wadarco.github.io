@@ -1,13 +1,9 @@
 import { FetchHttpClient } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, ManagedRuntime } from 'effect'
 import Image from 'next/image'
-import {
-  cacheImage,
-  extractMetadata,
-  fetchCloudinary,
-  hashMetadata,
-} from '~/lib/external-image/ExternalImage'
+import * as Cloudinary from '~/utils/Cloudinary.ts'
+import * as RemoteImage from '~/utils/RemoteImage.ts'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string
@@ -15,24 +11,27 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   priority?: boolean
 }
 
-export default async function ClounaryImage({ src, width, height, ...props }: Props) {
-  const task = Effect.gen(function* () {
-    const buffer = yield* fetchCloudinary({ id: src, width: width, height: height })
-    const hash = yield* hashMetadata({ id: src, width: width, height: height })
-    const metadata = yield* extractMetadata(buffer)
-    const url = yield* cacheImage(hash, new Uint8Array(buffer))
-    return { url, ...metadata }
-  })
+const runtime = ManagedRuntime.make(
+  Layer.mergeAll(BunContext.layer, FetchHttpClient.layer),
+)
 
-  const image = await Effect.runPromise(
-    task.pipe(Effect.provide(Layer.mergeAll(BunContext.layer, FetchHttpClient.layer))),
+export default async function ClounaryImage({ src: id, ...props }: Props) {
+  const { img, metadata } = await Cloudinary.imageURL({ ...props, id }).pipe(
+    Effect.flatMap(Cloudinary.fetchImage),
+    Effect.map((buffer) => new Uint8Array(buffer)),
+    Effect.flatMap((buffer) =>
+      Effect.all({
+        img: RemoteImage.make(id, buffer),
+        metadata: RemoteImage.metadata(buffer),
+      }),
+    ),
+    runtime.runPromise,
   )
 
-  if (!image.width || !image.height) {
+  if (!metadata.width || !metadata.height) {
     throw new Error('Failed to read image metadata')
   }
-
   return (
-    <Image {...props} width={image.width} height={image.height} src={`/${image.url}`} />
+    <Image {...props} width={metadata.width} height={metadata.height} src={`/${img}`} />
   )
 }
