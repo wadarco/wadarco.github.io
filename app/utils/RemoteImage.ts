@@ -18,7 +18,7 @@ export const make = (image: string, buffer: Uint8Array) =>
 
     return yield* hashFilename(image).pipe(
       Effect.map((filePath) => `cached/${filePath}`),
-      Effect.tap(dirExists && fs.makeDirectory('public/cached', { recursive: true })),
+      Effect.tap(!dirExists && fs.makeDirectory('public/cached', { recursive: true })),
       Effect.tap((filePath) => fs.writeFile(`public/${filePath}`, buffer)),
     )
   })

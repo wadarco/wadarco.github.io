@@ -7,7 +7,8 @@ import * as Cloudinary from '~/utils/Cloudinary.ts'
 import * as RemoteImage from '~/utils/RemoteImage.ts'
 
 const fileSystemMock = FileSystem.layerNoop({
-  writeFile: () => Effect.sync(() => {}),
+  writeFile: () => Effect.void,
+  makeDirectory: () => Effect.void,
 })
 
 describe('image', () => {
