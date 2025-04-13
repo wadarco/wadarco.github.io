@@ -28,16 +28,19 @@ export const frontmatter =
       : Schema.decode(schema)(yaml.parse(match[1]))
   }
 
-export const compileToJsx = (plugins?: Readonly<Plugin>[]) => (content: string) =>
-  Effect.promise(() =>
-    compile(content.replace(frontmatterRegx, ''), {
-      outputFormat: 'function-body',
-      rehypePlugins: plugins,
-    }),
-  ).pipe(
-    Effect.flatMap((compiled) => Effect.promise(() => run(compiled, jsxRuntime))),
-    Effect.map((_) => _.default),
-  )
+export const compileToJsx =
+  (baseUrl: string, plugins?: Readonly<Plugin>[]) => (content: string) =>
+    Effect.promise(() =>
+      compile(content.replace(frontmatterRegx, ''), {
+        outputFormat: 'function-body',
+        rehypePlugins: plugins,
+      }),
+    ).pipe(
+      Effect.flatMap((compiled) =>
+        Effect.promise(() => run(compiled, { ...jsxRuntime, baseUrl })),
+      ),
+      Effect.map((_) => _.default),
+    )
 
 export const make = <A, I>(
   schema: Schema.Schema<A, I>,
@@ -55,14 +58,14 @@ export const make = <A, I>(
       Stream.filterEffect((e) => Effect.map(fs.stat(e), (_) => _.type === 'File')),
       Stream.mapEffect((filename) =>
         Effect.all([
-          Effect.succeed(path.parse(filename).name),
+          path.toFileUrl(filename),
           Effect.cached(fs.readFileString(filename, 'utf-8')),
         ]),
       ),
-      Stream.map(([id, file]) => ({
-        id: Effect.succeed(id),
+      Stream.map(([url, file]) => ({
+        id: Effect.succeed(path.parse(url.pathname).name),
         data: Effect.flatMap(file, frontmatter(schema)),
-        Content: Effect.flatMap(file, compileToJsx(plugins)),
+        Content: Effect.flatMap(file, compileToJsx(url.href, plugins)),
       })),
     )
   }).pipe((_) => Stream.flatten(_))
