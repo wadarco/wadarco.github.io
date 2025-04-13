@@ -6,6 +6,8 @@ import { setupServer } from 'msw/native'
 import * as Cloudinary from '~/utils/Cloudinary.ts'
 import * as RemoteImage from '~/utils/RemoteImage.ts'
 
+process.env.CLOUDINARY_CLOUD_NAME ??= ''
+
 const fileSystemMock = FileSystem.layerNoop({
   writeFile: () => Effect.void,
   makeDirectory: () => Effect.void,
