@@ -1,8 +1,8 @@
 import { BunContext } from '@effect/platform-bun'
 import { Chunk, Effect, ManagedRuntime, Stream } from 'effect'
 import * as Post from '~/(blog)/Post.ts'
+import { makeAtomFeed } from '~/feed.xml/atom'
 import { Content } from '~/lib/content-loader'
-import { makeAtomFeed } from '~/lib/web-feed/Atom.ts'
 
 export async function GET() {
   const { renderToStaticMarkup } = await import('react-dom/server')
