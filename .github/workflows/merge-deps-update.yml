@@ -7,7 +7,7 @@ on:
 jobs:
   squash-to-master:
     runs-on: ubuntu-latest
-    if: ${{contains(fromJSON('["app/dependabot", "app/github-actions"]'), github.event.pull_request.user.login)}}
+    if: contains('app/dependabot app/github-actions',  github.event.pull_request.user.login)
     steps:
       - name: Squash to master
         env:
