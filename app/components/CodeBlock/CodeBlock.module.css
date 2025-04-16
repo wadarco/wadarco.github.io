@@ -2,16 +2,16 @@
   .code-container {
     container-type: inline-size;
 
-    code {
+    & code {
       display: block;
     }
+  }
+  @container (width > 40em) {
+    .code-container code {
+      counter-reset: line 0;
+      counter-increment: line 0;
 
-    @container (width > 40em) {
-      code {
-        counter-reset: line 0;
-        counter-increment: line 0;
-      }
-      code :global(.line)::before {
+      & :global(.line)::before {
         display: inline-block;
         width: 1em;
         margin-right: 1.5em;
