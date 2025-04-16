@@ -1,4 +1,4 @@
-import { Config, Effect, Schema } from 'effect'
+import { Config, Effect, Schema, pipe } from 'effect'
 import { XMLBuilder } from 'fast-xml-parser'
 
 type AtomSchema = typeof AtomSchema.Type
@@ -15,20 +15,27 @@ const AtomSchema = Schema.Struct({
   ),
 })
 
-export const makeAtomFeed = Effect.fn(function* (opts: AtomSchema) {
-  const title = yield* Config.string('METADATA_TITLE')
-  const subtitle = yield* Config.string('METADATA_DESCRIPTION')
-  const site = yield* Config.string('SITE_URL')
-  const name = yield* Config.string('AUTHOR_NAME')
-  const email = yield* Config.string('AUTHOR_EMAIL')
-  const builder = new XMLBuilder({
-    suppressEmptyNode: true,
-    processEntities: false,
-    ignoreAttributes: false,
-    attributeNamePrefix: '_',
-  })
-  const xmlObject = (data: AtomSchema): string =>
-    builder.build({
+const builder = new XMLBuilder({
+  suppressEmptyNode: true,
+  processEntities: false,
+  ignoreAttributes: false,
+  attributeNamePrefix: '_',
+})
+
+export const make = (data: AtomSchema) =>
+  pipe(
+    Effect.all(
+      [
+        Config.string('METADATA_TITLE'),
+        Config.string('METADATA_DESCRIPTION'),
+        Config.string('SITE_URL'),
+        Config.string('AUTHOR_NAME'),
+        Config.string('AUTHOR_EMAIL'),
+        Schema.decode(AtomSchema)(data),
+      ],
+      { concurrency: 'unbounded' },
+    ),
+    Effect.map(([title, subtitle, site, name, email, data]) => ({
       '?xml': { _version: '1.0', _encoding: 'UTF-8' },
       feed: {
         _xmlns: 'http://www.w3.org/2005/Atom',
@@ -45,6 +52,6 @@ export const makeAtomFeed = Effect.fn(function* (opts: AtomSchema) {
           content: { _type: 'text/html', '#text': `${entry.content}\n` },
         })),
       },
-    })
-  return yield* Effect.map(Schema.decode(AtomSchema)(opts), xmlObject)
-})
+    })),
+    Effect.map((e) => builder.build(e)),
+  )
