@@ -3,7 +3,7 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
-import { useTheme } from '../theme/useTheme.ts'
+import { useTheme } from '~/lib/theme/useTheme.ts'
 
 export default function Header() {
   const containerRef = useRef<HTMLDivElement>(null)

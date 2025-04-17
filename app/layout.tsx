@@ -3,7 +3,7 @@ import { Hubot_Sans, Mona_Sans } from 'next/font/google'
 import './globals.css'
 import clsx from 'clsx'
 import Header from './components/Header.tsx'
-import ThemeScript from './theme/ThemeScript.tsx'
+import ThemeScript from './lib/theme/ThemeScript.tsx'
 
 const mona_sans = Mona_Sans({
   display: 'swap',
