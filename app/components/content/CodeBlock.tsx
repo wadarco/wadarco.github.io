@@ -2,9 +2,9 @@
 
 import clsx from 'clsx'
 import { useRef } from 'react'
-import styles from './CodeBlock.module.css'
 import CopyBtn from './CopyBtn.tsx'
 import LanguageIcon from './LanguageIcon.tsx'
+import styles from './styles.module.css'
 
 type CodeBlockProps = React.ComponentProps<'pre'> & {
   'data-language': string
