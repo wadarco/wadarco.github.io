@@ -26,14 +26,14 @@ export default function CodeBlock({
   return (
     <div
       className={clsx(
-        'group my-8 prose-pre:my-0 prose-pre:rounded-none border-dn-border-200',
+        'group my-8 prose-pre:my-0 prose-pre:rounded-none border-dn-border-100',
         'overflow-hidden rounded-md border font-HubotSans',
         className,
       )}
     >
-      <div className="not-prose bg-dn-background-100">
+      <div className="not-prose">
         {filename ? (
-          <div className="flex items-center justify-between border-dn-border-200 px-4 py-2">
+          <div className="flex items-center justify-between border-dn-border-100 border-b px-4 py-2">
             <div className="inline-flex items-center gap-2">
               <LanguageIcon language={language === 'fish' ? 'bash' : language} />
               <span>{filename}</span>
@@ -58,7 +58,6 @@ export default function CodeBlock({
       <pre
         className={clsx(styles['code-container'], className)}
         ref={codeContainerRef}
-        style={style}
         {...props}
       >
         {children}
