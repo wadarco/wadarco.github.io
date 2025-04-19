@@ -1,16 +1,15 @@
 'use client'
 
 import clsx from 'clsx'
-import { useRef } from 'react'
+import { type ComponentProps, useRef } from 'react'
 import CopyBtn from './CopyBtn.tsx'
 import LanguageIcon from './LanguageIcon.tsx'
 import styles from './styles.module.css'
 
-type CodeBlockProps = React.ComponentProps<'pre'> & {
+type CodeBlockProps = ComponentProps<'pre'> & {
   'data-language': string
   'data-file'?: string
   'data-hide-line-numbers': boolean
-  children: React.ReactNode
 }
 
 export default function CodeBlock({
