@@ -2,7 +2,7 @@ name: Auto-merge Dependency PRs
 
 on:
   pull_request:
-    types: [opened, synchronize, edited]
+    branches: [master]
 
 permissions:
   contents: write
