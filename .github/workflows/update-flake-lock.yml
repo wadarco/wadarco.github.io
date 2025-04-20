@@ -7,6 +7,9 @@ on:
 jobs:
   lockfile:
     runs-on: ubuntu-latest
+    outputs:
+      pr_url: ${{ steps.update-lock.outputs.pull-request-url }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -15,9 +18,21 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Update flake.lock
+        id: update-lock
         uses: DeterminateSystems/update-flake-lock@main
         with:
           pr-title: "Update flake.lock"
           pr-labels: |
             dependencies
             automated
+
+  squash-to-master:
+    needs: lockfile
+    runs-on: ubuntu-latest
+    if: needs.lockfile.outputs.pr_url != ''
+    steps:
+      - name: Merge Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ needs.lockfile.outputs.pr_url }}
+        run: gh pr merge "$PR_URL" --squash --delete-branch
