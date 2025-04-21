@@ -11,7 +11,7 @@ permissions:
 jobs:
   squash-to-master:
     runs-on: ubuntu-latest
-    if: ${{ contains(fromJson('["dependabot[bot]", "github-actions[bot]'), github.actor) }}
+    if: ${{ contains(fromJson('["dependabot[bot]", "github-actions[bot]"]'), github.actor) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
