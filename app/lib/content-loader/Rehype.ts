@@ -1,6 +1,7 @@
 import rehypeShiki, { type RehypeShikiOptions } from '@shikijs/rehype'
 import { Effect, pipe } from 'effect'
 import type { Root } from 'hast'
+import type { Pluggable } from 'unified'
 import { visit } from 'unist-util-visit'
 
 const parseMetaString = (metaString: string) =>
@@ -40,4 +41,7 @@ const rehypeOptions: RehypeShikiOptions = {
   parseMetaString: (metaString) => Effect.runSync(parseMetaString(metaString)),
 }
 
-export const plugins = [[rehypeShiki, rehypeOptions], addLanguageDataAttribute] as const
+export const plugins = [
+  [rehypeShiki, rehypeOptions],
+  addLanguageDataAttribute,
+] as Pluggable[]

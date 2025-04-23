@@ -16,10 +16,10 @@ export const order = Order.mapInput(
   (post: { data: Post }) => post.data.pubDate,
 )
 
-export const source = {
+export const source = Content.glob({
   base: 'app/(blog)/content',
   pattern: '**/**.{md,mdx}',
-}
+})
 
-export const content = Content.make(Post, source, [...Rehype.plugins])
+export const content = Content.make({ schema: Post, source, plugins: Rehype.plugins })
 export const get = (id: string) => content.pipe(Content.get(id))

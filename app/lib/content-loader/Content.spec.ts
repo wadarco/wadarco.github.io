@@ -4,7 +4,7 @@ import { BunContext } from '@effect/platform-bun'
 import type { PlatformError } from '@effect/platform/Error'
 import type { File } from '@effect/platform/FileSystem'
 import { Effect, Schema } from 'effect'
-import { Content } from './Content.ts'
+import * as Content from './Content.ts'
 
 describe('compiler test-suite', () => {
   const documentMock = '---\nfoo: foo\nbar: bar\n---\n'
@@ -20,13 +20,23 @@ describe('compiler test-suite', () => {
       >,
   })
 
-  const content = Content.make(
-    Schema.Struct({
+  const content = Content.make({
+    schema: Schema.Struct({
       foo: Schema.String,
       bar: Schema.String,
     }),
-    { base: 'test', pattern: '**/**' },
-  )
+    source: Content.glob({ base: 'test', pattern: '**/**' }),
+  })
+
+  test('::', () => {
+    content.pipe(
+      Content.get('document'),
+      Effect.flatMap((e) => e.id),
+      Effect.provide(fileSystemMock),
+      Effect.provide(BunContext.layer),
+      Effect.runPromise,
+    )
+  })
 
   test('Content:data', () =>
     content.pipe(
