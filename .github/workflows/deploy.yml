@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Run CI]
+    types: [completed]
+    branches: [master]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build Page
+        env:
+          METADATA_TITLE: ${{vars.METADATA_TITLE}}
+          METADATA_DESCRIPTION: ${{vars.METADATA_DESCRIPTION}}
+          SITE_URL: ${{vars.SITE_URL}}
+          AUTHOR_NAME: ${{vars.AUTHOR_NAME}}
+          AUTHOR_EMAIL: ${{vars.AUTHOR_EMAIL}}
+          CLOUDINARY_CLOUD_NAME: ${{vars.CLOUDINARY_CLOUD_NAME}}
+          BASE_PATH: ${{vars.BASE_PATH}}
+        run: bun --bun run build
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
