@@ -26,7 +26,7 @@ export default function CodeBlock({
     <div
       className={clsx(
         'group my-8 prose-pre:my-0 prose-pre:rounded-none border-dn-border-100',
-        'overflow-hidden rounded-md border font-HubotSans',
+        'overflow-hidden rounded-md border',
         className,
       )}
     >
@@ -55,7 +55,7 @@ export default function CodeBlock({
       </div>
 
       <pre
-        className={clsx(styles['code-container'], className)}
+        className={clsx(styles['code-container'], 'font-jetBrains', className)}
         ref={codeContainerRef}
         {...props}
       >

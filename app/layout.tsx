@@ -1,20 +1,21 @@
 import type { Metadata } from 'next'
-import { Hubot_Sans, Mona_Sans } from 'next/font/google'
+import { IBM_Plex_Sans_JP, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import clsx from 'clsx'
 import Header from './components/Header.tsx'
 import ThemeScript from './lib/theme/ThemeScript.tsx'
 
-const mona_sans = Mona_Sans({
+const ibm_plex_sans = IBM_Plex_Sans_JP({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-MonaSans',
+  weight: '400',
+  variable: '--font-ibm-plex-sans',
 })
 
-const hubot_sans = Hubot_Sans({
+const jetBrains_Mono = JetBrains_Mono({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-HubotSans',
+  variable: '--font-jetBrains-mono',
 })
 
 type Props = Readonly<{
@@ -38,8 +39,8 @@ export default ({ children }: Props) => (
     <body
       className={clsx(
         'grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-dn-background-200',
-        'font-MonaSans text-dn-foreground-200 antialiased',
-        `${mona_sans.variable} ${hubot_sans.variable}`,
+        'font-ibm-plex-sans text-dn-foreground-200 antialiased',
+        `${ibm_plex_sans.variable} ${jetBrains_Mono.variable}`,
       )}
     >
       <ThemeScript />

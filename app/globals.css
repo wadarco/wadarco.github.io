@@ -15,8 +15,8 @@
   --color-dn-accent-100: var(--dn-accent-100);
   --color-dn-accent-200: var(--dn-accent-200);
 
-  --font-MonaSans: var(--font-MonaSans);
-  --font-HubotSans: var(--font-HubotSans);
+  --font-ibm-plex-sans: var(--font-ibm-plex-sans);
+  --font-jetBrains: var(--font-jetBrains-mono);
 }
 
 @layer theme {

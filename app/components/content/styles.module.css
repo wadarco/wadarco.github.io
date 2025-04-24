@@ -4,6 +4,7 @@
 
     & code {
       display: block;
+      font-family: inherit;
     }
   }
   @container (width > 40em) {
