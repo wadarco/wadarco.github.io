@@ -15,6 +15,7 @@ type CodeBlockProps = ComponentProps<'pre'> & {
 export default function CodeBlock({
   'data-language': language,
   'data-filename': filename,
+  'data-hide-line-numbers': hideLineNumbers,
   style,
   className,
   children,
@@ -53,6 +54,7 @@ export default function CodeBlock({
       <pre
         className={clsx(styles['code-container'], 'font-jetBrains', className)}
         ref={codeContainerRef}
+        data-hide-line-numbers={(hideLineNumbers ?? !filename) ? '' : null}
         {...props}
       >
         {children}
