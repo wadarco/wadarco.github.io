@@ -131,7 +131,7 @@ hardware configuration.
 
 ### configuration.nix
 
-```nix file=configuration.nix
+```nix filename=configuration.nix
 {
   pkgs,
   lib,
@@ -198,7 +198,7 @@ hardware configuration.
 
 To use Nix Flakes, you must enable the feature in your config.
 
-```nix file=configuration.nix
+```nix filename=configuration.nix
 {
   nix.settings = {
     experimental-features = [
@@ -210,7 +210,7 @@ To use Nix Flakes, you must enable the feature in your config.
 }
 ```
 
-```nix file=flake.nix
+```nix filename=flake.nix
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

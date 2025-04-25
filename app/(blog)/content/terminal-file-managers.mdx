@@ -30,7 +30,7 @@ functionality through custom scripts.
 `$XDG_CONFIG_DIRS/lf/lfrc`. However, you can specify a different location
 using the `-config` flag.
 
-```bash file=~/.config/lf/lfrc
+```bash filename=~/.config/lf/lfrc
 set shell fish
 set shellopts '-eu'
 
@@ -80,7 +80,7 @@ Some files may require thumbnails. For more details, consider reviewing the
 For images and cover my recommendation is to use the
 [kitty graphics protocol](https://sw.kovidgoyal.net/kitty/graphics-protocol/).
 
-```fish file=~/.config/lf/preview
+```fish filename=~/.config/lf/preview
 #!/usr/bin/env fish
 
 set thumbnail (printf "$XDG_CACHE_HOME/thumbnails/large/%s.png" (echo -n "file://$argv[1]"| md5sum| awk '{print $1}'))
@@ -132,7 +132,7 @@ package manager.
 ya pack -a yazi-rs/flavors:catppuccin-mocha
 ```
 
-```toml file=~/.config/yazi/theme.toml
+```toml filename=~/.config/yazi/theme.toml
 [flavor]
 use = "catppuccin-mocha"
 ```

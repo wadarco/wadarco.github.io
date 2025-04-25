@@ -8,13 +8,13 @@ import styles from './styles.module.css'
 
 type CodeBlockProps = ComponentProps<'pre'> & {
   'data-language': string
-  'data-file'?: string
+  'data-filename'?: string
   'data-hide-line-numbers': boolean
 }
 
 export default function CodeBlock({
   'data-language': language,
-  'data-file': filename,
+  'data-filename': filename,
   style,
   className,
   children,
