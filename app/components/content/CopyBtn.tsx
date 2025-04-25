@@ -47,7 +47,7 @@ const CopyBtn: FunctionComponent<Props> = ({ contentElRef }) => {
 
   return (
     <button
-      className="cursor-pointer rounded p-2 hover:bg-dn-background-200"
+      className="cursor-pointer rounded p-2 hover:bg-dn-background-100"
       type="button"
       onClick={setClipboard}
     >

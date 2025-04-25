@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from 'clsx'
-import { type ComponentProps, useRef } from 'react'
+import { type ComponentProps, type RefObject, useRef, useState } from 'react'
 import CopyBtn from './CopyBtn.tsx'
 import LanguageIcon from './LanguageIcon.tsx'
 import styles from './styles.module.css'
@@ -41,15 +41,11 @@ export default function CodeBlock({
           </div>
         ) : (
           <div className="relative">
-            <div
-              className={clsx(
-                'invisible absolute top-0 right-0 m-2 flex overflow-hidden rounded-md',
-                'border border-transparent bg-dn-background-200/40 group-hover:visible',
-                'group-hover:border-dn-border-100',
-              )}
-            >
-              <CopyBtn contentElRef={codeContainerRef} />
-            </div>
+            <CopyBtnAbsolute
+              filename={filename}
+              language={language}
+              ref={codeContainerRef}
+            />
           </div>
         )}
       </div>
@@ -61,6 +57,38 @@ export default function CodeBlock({
       >
         {children}
       </pre>
+    </div>
+  )
+}
+
+const CopyBtnAbsolute = ({
+  ref,
+}: {
+  ref: RefObject<Element | null>
+  language: string
+  filename: string | undefined
+}) => {
+  const [isVisible, setIsVisible] = useState(false)
+  const [timer, setTimer] = useState<Timer>()
+
+  const keepElementVisible = async () => {
+    clearTimeout(timer)
+    setIsVisible(true)
+    setTimer(setTimeout(() => setIsVisible(false), 4000))
+  }
+
+  return (
+    <div
+      className={clsx(
+        'absolute top-0 right-0 m-2 flex overflow-hidden rounded-md border',
+        'bg-dn-background-200/40 group-hover:visible',
+        'group-hover:border-dn-border-100',
+        isVisible ? 'border-dn-border-100' : 'invisible border-transparent',
+      )}
+      onKeyUp={undefined}
+      onClick={keepElementVisible}
+    >
+      <CopyBtn contentElRef={ref} />
     </div>
   )
 }
