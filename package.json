@@ -28,7 +28,7 @@
     "effect": "^3.14.14",
     "fast-xml-parser": "^5.2.1",
     "lefthook": "^1.11.12",
-    "msw": "^2.7.3",
+    "msw": "^2.7.5",
     "serve": "^14.2.4",
     "sharp": "^0.34.1",
     "tailwindcss": "^4.1.4",
