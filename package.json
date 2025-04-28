@@ -23,7 +23,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/bun": "^1.2.10",
     "@types/react": "^19.1.1",
-    "@types/react-dom": "^19.1.1",
+    "@types/react-dom": "^19.1.2",
     "babel-plugin-react-compiler": "^19.0.0-beta-ebf51a3-20250411",
     "effect": "^3.14.11",
     "fast-xml-parser": "^5.2.0",
