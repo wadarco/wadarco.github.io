@@ -3,25 +3,6 @@
 import { useEffect } from 'react'
 import { useTheme } from './useTheme.ts'
 
-function preloadTheme() {
-  try {
-    const stringify = localStorage.getItem('theme') ?? '{}'
-    const { colorScheme, accentColor } = JSON.parse(stringify)
-
-    if (!colorScheme || !accentColor) throw new Error()
-    document.documentElement.classList.toggle(
-      'dark',
-      colorScheme === 'auto'
-        ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        : colorScheme === 'dark',
-    )
-    document.documentElement.setAttribute('accent-color', accentColor)
-  } catch {
-    localStorage.setItem('theme', '{"colorScheme":"auto","accentColor":"blue"}')
-    preloadTheme()
-  }
-}
-
 export default function ThemeScript() {
   const { colorScheme, accentColor } = useTheme()
 
@@ -34,4 +15,22 @@ export default function ThemeScript() {
   }, [accentColor])
 
   return <script suppressHydrationWarning>{`(${preloadTheme})()`}</script>
+}
+
+const preloadTheme = () => {
+  const stringify = localStorage.getItem('theme') ?? '{}'
+
+  try {
+    const { colorScheme, accentColor } = JSON.parse(stringify)
+    if (!colorScheme || !accentColor) {
+      localStorage.setItem('theme', '{"colorScheme":"auto","accentColor":"blue"}')
+    }
+    document.documentElement.classList.toggle(
+      'dark',
+      colorScheme === 'auto' || !colorScheme
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+        : colorScheme === 'dark',
+    )
+    document.documentElement.setAttribute('accent-color', accentColor || 'blue')
+  } catch {}
 }
