@@ -71,7 +71,6 @@ export default function Header() {
               onKeyDown={undefined}
               onClick={() => {
                 setTheme((theme) => ({
-                  ...theme,
                   colorScheme: theme.colorScheme === 'dark' ? 'light' : 'dark',
                 }))
               }}
