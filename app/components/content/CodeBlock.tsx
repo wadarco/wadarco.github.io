@@ -52,7 +52,11 @@ export default function CodeBlock({
       </div>
 
       <pre
-        className={clsx(styles['code-container'], 'font-jetBrains', className)}
+        className={clsx(
+          styles['code-container'],
+          'bg-dn-background-100/30 font-jetBrains',
+          className,
+        )}
         ref={codeContainerRef}
         data-hide-line-numbers={(hideLineNumbers ?? !filename) ? '' : null}
         {...props}
