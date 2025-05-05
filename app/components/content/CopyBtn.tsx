@@ -13,7 +13,7 @@ export default function CopyBtn({ contentElRef }: Props) {
 
   const keyframes = [
     { transform: 'scale(1)', opacity: '1' },
-    { transform: 'scale(0.2)', opacity: '0' },
+    { transform: 'scale(0.5)', opacity: '0' },
   ]
 
   const setClipboard: MouseEventHandler<HTMLButtonElement> = async () => {
