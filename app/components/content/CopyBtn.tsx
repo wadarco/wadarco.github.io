@@ -1,48 +1,45 @@
 'use client'
-import { type FunctionComponent, type RefObject, useRef, useState } from 'react'
+import {
+  type FunctionComponent,
+  type MouseEventHandler,
+  type RefObject,
+  useRef,
+  useState,
+} from 'react'
 
 type Props = { contentElRef: RefObject<Element | null> }
 
 const CopyBtn: FunctionComponent<Props> = ({ contentElRef }) => {
-  const [timer, setTimer] = useState<Timer>()
+  const svgRef = useRef<HTMLDivElement>(null)
   const [copied, setCopied] = useState(false)
-  const iconRef = useRef<HTMLDivElement>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
 
-  const animation = () =>
-    iconRef.current?.animate(
-      [
-        { transform: 'scale(1)', opacity: '1' },
-        { transform: 'scale(0.2)', opacity: '0' },
-      ],
-      { duration: 150 },
-    )
+  const keyframes = [
+    { transform: 'scale(1)', opacity: '1' },
+    { transform: 'scale(0.2)', opacity: '0' },
+  ]
 
-  const animationReverse = () =>
-    iconRef.current?.animate(
-      [
-        { transform: 'scale(0.2)', opacity: '0' },
-        { transform: 'scale(1)', opacity: '1' },
-      ],
-      { duration: 150 },
-    )
-
-  const setClipboard = async () => {
-    if (contentElRef.current?.textContent) {
-      navigator.clipboard.writeText(contentElRef.current.textContent)
+  const setClipboard: MouseEventHandler<HTMLButtonElement> = async () => {
+    const svg = svgRef.current
+    if (isAnimating || !contentElRef.current?.textContent || !svg) {
+      return null
+    }
+    const animate = async () => {
+      await svg.animate(keyframes, { duration: 150 }).finished
+    }
+    const animateReverse = async () => {
+      await svg.animate(keyframes.slice().reverse(), { duration: 150 }).finished
     }
 
-    if (iconRef.current) {
-      await animation()?.finished.then(() => setCopied(true))
-      await animationReverse()?.finished
+    navigator.clipboard.writeText(contentElRef.current.textContent)
+    setIsAnimating(true)
+    await animate().then(() => setCopied(true))
+    await animateReverse()
 
-      const timerId = setTimeout(async () => {
-        await animation()?.finished.then(() => setCopied(false))
-        await animationReverse()?.finished
-      }, 800)
-
-      clearTimeout(timer)
-      setTimer(timerId)
-    }
+    setTimeout(async () => {
+      await animate().then(() => setCopied(false))
+      await animateReverse().then(() => setIsAnimating(false))
+    }, 800)
   }
 
   return (
@@ -51,7 +48,7 @@ const CopyBtn: FunctionComponent<Props> = ({ contentElRef }) => {
       type="button"
       onClick={setClipboard}
     >
-      <div ref={iconRef}>
+      <div ref={svgRef}>
         {copied ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
