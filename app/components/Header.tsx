@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { useTheme } from '~/lib/theme/useTheme.ts'
+import { ButtonGhost } from './ui/button.tsx'
 import { Tooltip } from './ui/tooltip.tsx'
 
 export default function Header() {
@@ -34,32 +35,26 @@ export default function Header() {
         </Link>
 
         <nav>
-          <ul className="grid grid-flow-col content-between items-center gap-1 font-medium">
-            <li>
-              <Link className="rounded-md p-2 hover:bg-dn-background-100" href="/posts">
-                Blog
-              </Link>
-            </li>
+          <div className="grid grid-flow-col content-between items-center gap-1 font-medium">
+            <ButtonGhost>
+              <Link href="/posts">Blog</Link>
+            </ButtonGhost>
 
             <Tooltip content={<span className="text-xs">Web feed</span>}>
-              <a
-                className="flex rounded-md p-3 hover:bg-dn-background-100"
-                href="/feed.xml"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <figure
-                  className={clsx(
-                    'inline-block h-4 w-4 bg-current [mask-size:100%_100%]',
-                    '[mask:url(/atom-feed.svg)]',
-                  )}
-                />
-              </a>
+              <ButtonGhost className="p-3">
+                <a className="flex" href="/feed.xml" target="_blank" rel="noreferrer">
+                  <figure
+                    className={clsx(
+                      'inline-block h-4 w-4 bg-current [mask-size:100%_100%]',
+                      '[mask:url(/atom-feed.svg)]',
+                    )}
+                  />
+                </a>
+              </ButtonGhost>
             </Tooltip>
 
-            <span
-              className={'flex rounded-md p-2.5 hover:bg-dn-background-100'}
-              onKeyDown={undefined}
+            <ButtonGhost
+              className="p-2.5"
               onClick={() => {
                 setTheme((theme) => ({
                   colorScheme: theme.colorScheme === 'dark' ? 'light' : 'dark',
@@ -72,8 +67,8 @@ export default function Header() {
                   '[mask:url(/light_mode.svg)] dark:[mask:url(/dark_mode.svg)]',
                 )}
               />
-            </span>
-          </ul>
+            </ButtonGhost>
+          </div>
         </nav>
       </header>
     </div>
