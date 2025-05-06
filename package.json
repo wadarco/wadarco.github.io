@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@cloudinary/url-gen": "^1.21.0",
-    "@effect/platform": "^0.80.14",
+    "@effect/platform": "^0.80.19",
     "@effect/platform-bun": "^0.61.6",
     "@mdx-js/mdx": "^3.1.0",
     "@shikijs/rehype": "^3.3.0",
