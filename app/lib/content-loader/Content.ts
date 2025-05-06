@@ -2,7 +2,6 @@ import { FileSystem, Path } from '@effect/platform'
 import { compile, run } from '@mdx-js/mdx'
 import { Effect, Option, Schema, Stream } from 'effect'
 import { dual } from 'effect/Function'
-import * as jsxRuntime from 'react/jsx-runtime'
 import type { Pluggable } from 'unified'
 import yaml from 'yaml'
 
@@ -52,20 +51,27 @@ export const compileToJsx = <A, E>(args: {
   content: Effect.Effect<string, A, E>
   plugins: Pluggable[] | undefined
 }) =>
-  args.content.pipe(
-    Effect.flatMap((content) =>
-      Effect.promise(() =>
-        compile(content.replace(frontmatterRegx, ''), {
-          outputFormat: 'function-body',
-          rehypePlugins: args.plugins,
-        }),
+  Effect.gen(function* () {
+    const jsxRuntime = yield* Effect.promise(() =>
+      process.env.NODE_ENV === 'production'
+        ? import('react/jsx-runtime')
+        : import('react/jsx-dev-runtime'),
+    )
+    const { default: Content } = yield* args.content.pipe(
+      Effect.flatMap((content) =>
+        Effect.promise(() =>
+          compile(content.replace(frontmatterRegx, ''), {
+            outputFormat: 'function-body',
+            rehypePlugins: args.plugins,
+          }),
+        ),
       ),
-    ),
-    Effect.flatMap((compiled) =>
-      Effect.promise(() => run(compiled, { ...jsxRuntime, baseUrl: args.baseUrl })),
-    ),
-    Effect.map((_) => _.default),
-  )
+      Effect.flatMap((compiled) =>
+        Effect.promise(() => run(compiled, { ...jsxRuntime, baseUrl: args.baseUrl })),
+      ),
+    )
+    return Content
+  })
 
 export type Content<T, C> = {
   id: Effect.Effect<string>
