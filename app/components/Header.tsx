@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { useTheme } from '~/lib/theme/useTheme.ts'
+import { Tooltip } from './ui/tooltip.tsx'
 
 export default function Header() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -40,31 +41,21 @@ export default function Header() {
               </Link>
             </li>
 
-            <a
-              className="group relative flex rounded-md p-3 hover:bg-dn-background-100"
-              href="/feed.xml"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <figure
-                className={clsx(
-                  'inline-block h-4 w-4 bg-current [mask-size:100%_100%]',
-                  '[mask:url(/atom-feed.svg)]',
-                )}
-              />
-              <span
-                title="atom web feed"
-                className={clsx(
-                  '-inset-x-1/2 pointer-events-none invisible absolute border',
-                  'whitespace-nowrap rounded-md border-dn-border-200 p-2',
-                  'text-center text-xs opacity-0 duration-120',
-                  'group-hover:visible group-hover:translate-y-8',
-                  'group-hover:bg-dn-background-100 group-hover:opacity-100',
-                )}
+            <Tooltip content={<span className="text-xs">Web feed</span>}>
+              <a
+                className="flex rounded-md p-3 hover:bg-dn-background-100"
+                href="/feed.xml"
+                target="_blank"
+                rel="noreferrer"
               >
-                Web feed
-              </span>
-            </a>
+                <figure
+                  className={clsx(
+                    'inline-block h-4 w-4 bg-current [mask-size:100%_100%]',
+                    '[mask:url(/atom-feed.svg)]',
+                  )}
+                />
+              </a>
+            </Tooltip>
 
             <span
               className={'flex rounded-md p-2.5 hover:bg-dn-background-100'}
