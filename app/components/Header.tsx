@@ -40,18 +40,18 @@ export default function Header() {
               <Link href="/posts">Blog</Link>
             </ButtonGhost>
 
-            <Tooltip content={<span className="text-xs">Web feed</span>}>
-              <ButtonGhost className="p-3">
-                <a className="flex" href="/feed.xml" target="_blank" rel="noreferrer">
+            <a className="flex" href="/feed.xml" target="_blank" rel="noreferrer">
+              <Tooltip content={<span className="text-xs">Web feed</span>}>
+                <ButtonGhost className="p-3">
                   <figure
                     className={clsx(
                       'inline-block h-4 w-4 bg-current [mask-size:100%_100%]',
                       '[mask:url(/atom-feed.svg)]',
                     )}
                   />
-                </a>
-              </ButtonGhost>
-            </Tooltip>
+                </ButtonGhost>
+              </Tooltip>
+            </a>
 
             <ButtonGhost
               className="p-2.5"
