@@ -3,7 +3,7 @@ import { FileSystem } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
 import type { PlatformError } from '@effect/platform/Error'
 import type { File } from '@effect/platform/FileSystem'
-import { Effect, Schema } from 'effect'
+import { Effect, Option, Schema, Stream } from 'effect'
 import * as Content from './Content.ts'
 
 describe('compiler test-suite', () => {
@@ -20,27 +20,27 @@ describe('compiler test-suite', () => {
       >,
   })
 
-  const content = Content.make({
+  const document = Content.make({
     schema: Schema.Struct({
       foo: Schema.String,
       bar: Schema.String,
     }),
     source: Content.glob({ base: 'test', pattern: '**/**' }),
-  })
+  }).pipe(
+    Stream.filter((c) => c.id === 'document'),
+    Stream.runHead,
+    Effect.map(Option.getOrThrow),
+  )
 
   test('::', () => {
-    content.pipe(
-      Content.get('document'),
-      Effect.flatMap((e) => e.id),
+    document.pipe(
       Effect.provide(fileSystemMock),
       Effect.provide(BunContext.layer),
       Effect.runPromise,
     )
   })
-
   test('Content:data', () =>
-    content.pipe(
-      Content.get('document'),
+    document.pipe(
       Effect.flatMap((c) => c.data),
       Effect.map((c) => expect(c).toBeDefined()),
       Effect.provide(fileSystemMock),
@@ -48,8 +48,7 @@ describe('compiler test-suite', () => {
       Effect.runPromise,
     ))
   test('Content:component', () =>
-    content.pipe(
-      Content.get('document'),
+    document.pipe(
       Effect.flatMap((c) => c.Content),
       Effect.map((c) => expect(c).toBeTypeOf('function')),
       Effect.provide(fileSystemMock),
