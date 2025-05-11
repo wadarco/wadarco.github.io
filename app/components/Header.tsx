@@ -36,9 +36,9 @@ export default function Header() {
 
         <nav>
           <div className="grid grid-flow-col content-between items-center gap-1 font-medium">
-            <ButtonGhost>
-              <Link href="/posts">Blog</Link>
-            </ButtonGhost>
+            <Link href="/posts">
+              <ButtonGhost>Blog</ButtonGhost>
+            </Link>
 
             <a className="flex" href="/feed.xml" target="_blank" rel="noreferrer">
               <Tooltip content={<span className="text-xs">Web feed</span>}>
