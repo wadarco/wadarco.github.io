@@ -1,10 +1,10 @@
-import { Order, Schema } from 'effect'
+import { Effect, Option, Order, Schema, Stream } from 'effect'
 import { Content, Rehype } from '~/lib/content-loader'
 
 export const Post = Schema.Struct({
   title: Schema.String,
   description: Schema.String,
-  pubDate: Schema.Date,
+  pubDate: Schema.instanceOf(Date),
   updatedDate: Schema.optional(Schema.Date),
   image: Schema.optional(Schema.String),
   tags: Schema.String.pipe(Schema.Array, Schema.optional),
@@ -21,5 +21,15 @@ export const source = Content.glob({
   pattern: '**/**.{md,mdx}',
 })
 
-export const content = Content.make({ schema: Post, source, plugins: Rehype.plugins })
-export const get = (id: string) => content.pipe(Content.get(id))
+export const content = Content.make({
+  schema: Post,
+  source,
+  rehypePlugins: Rehype.plugins,
+})
+
+export const get = (id: string) =>
+  content.pipe(
+    Stream.filterEffect((_) => _.id.pipe(Effect.map((_id) => _id === id))),
+    Stream.runHead,
+    Effect.map(Option.getOrThrow),
+  )
