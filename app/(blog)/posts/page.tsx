@@ -6,7 +6,7 @@ import * as Post from '../Post.ts'
 export default async function PostsPage() {
   const posts = await Effect.runPromise(
     Post.content.pipe(
-      Stream.mapEffect(({ id, data }) => Effect.all({ data, id })),
+      Stream.flatMap(({ id, data }) => Effect.all({ id: Effect.succeed(id), data })),
       Stream.runCollect,
       Effect.map(Chunk.sort(Post.order)),
       Effect.provide(BunContext.layer),

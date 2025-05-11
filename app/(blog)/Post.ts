@@ -29,7 +29,7 @@ export const content = Content.make({
 
 export const get = (id: string) =>
   content.pipe(
-    Stream.filterEffect((_) => _.id.pipe(Effect.map((_id) => _id === id))),
+    Stream.filter((_) => _.id === id),
     Stream.runHead,
     Effect.map(Option.getOrThrow),
   )

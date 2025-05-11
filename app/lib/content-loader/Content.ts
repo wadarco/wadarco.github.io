@@ -67,23 +67,9 @@ export const make = <E, R, A, I>({
         remarkPlugins,
       })
       return {
-        id: Effect.succeed(path.parse(url.pathname).name),
+        id: path.parse(url.pathname).name,
         data: Schema.decodeUnknown(schema)(frontmatter),
         Content: Effect.sync(() => getMDXComponent(code)),
       }
     }),
   )
-
-// type ContentStream<Data, E, R> = Stream.Stream<Content<Data, E, R>, E, R>
-// type GetResult<Data, E, R> = Effect.Effect<Content<Data, E, R>>
-
-// export const get: {
-//   (id: string): <Data, E, R>(self: ContentStream<Data, E, R>) => GetResult<Data, E, R>
-//   <Data, E, R>(self: ContentStream<Data, E, R>, id: string): GetResult<Data, E, R>
-// } = dual(2, <Data, E, R>(stream: ContentStream<Data, E, R>, id: string) =>
-//   stream.pipe(
-//     Stream.filterEffect((_) => Effect.map(_.data, (data) => data.id === id)),
-//     Stream.runHead,
-//     Effect.map(Option.getOrThrow),
-//   ),
-// )

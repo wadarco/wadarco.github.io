@@ -13,7 +13,7 @@ const runtime = ManagedRuntime.make(BunContext.layer)
 
 export const generateStaticParams = () =>
   Post.content.pipe(
-    Stream.mapEffect((_) => Effect.map(_.id, (id) => ({ id }))),
+    Stream.map(({ id }) => ({ id })),
     Stream.runCollect,
     Effect.map(Chunk.toArray),
     runtime.runPromise,

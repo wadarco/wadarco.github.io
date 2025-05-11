@@ -4,6 +4,7 @@ import type { MDXContent } from 'mdx/types'
 import type { Pluggable } from 'unified'
 
 export type Content<Data, E, R> = {
+  id: string
   data: Effect.Effect<Data, E, R>
   code: Effect.Effect<MDXContent, E, R>
 }
