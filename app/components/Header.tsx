@@ -1,34 +1,12 @@
-'use client'
-
 import clsx from 'clsx'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
-import { useTheme } from '~/lib/theme/useTheme.ts'
+import { ToggleTheme } from './toggle-theme.tsx'
 import { ButtonGhost } from './ui/button.tsx'
 import { Tooltip } from './ui/tooltip.tsx'
 
 export default function Header() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { setTheme } = useTheme()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      containerRef.current?.classList.toggle(
-        'shadow-dn-border-100',
-        document.documentElement.scrollTop > 0,
-      )
-    }
-
-    handleScroll()
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   return (
-    <div
-      className="sticky top-0 z-50 bg-dn-background-200 shadow-[0_1px_0_0] shadow-[transparent]"
-      ref={containerRef}
-    >
+    <div className="sticky top-0 z-50 bg-dn-background-200/80 backdrop-blur-xs">
       <header className="mx-auto flex max-w-screen-lg items-center justify-between px-4 py-2">
         <Link className="text-lg" href="/">
           <span className="font-extrabold text-xl">末吉</span>
@@ -53,21 +31,7 @@ export default function Header() {
               </Tooltip>
             </a>
 
-            <ButtonGhost
-              className="p-2.5"
-              onClick={() => {
-                setTheme((theme) => ({
-                  colorScheme: theme.colorScheme === 'dark' ? 'light' : 'dark',
-                }))
-              }}
-            >
-              <figure
-                className={clsx(
-                  'inline-block h-5 w-5 bg-current [mask-size:100%_100%]',
-                  '[mask:url(/light_mode.svg)] dark:[mask:url(/dark_mode.svg)]',
-                )}
-              />
-            </ButtonGhost>
+            <ToggleTheme />
           </div>
         </nav>
       </header>
