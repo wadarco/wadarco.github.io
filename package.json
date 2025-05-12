@@ -17,7 +17,7 @@
     "@cloudinary/url-gen": "^1.21.0",
     "@effect/platform": "^0.82.0",
     "@effect/platform-bun": "^0.61.6",
-    "@shikijs/rehype": "^3.3.0",
+    "@shikijs/rehype": "^3.4.0",
     "@tailwindcss/postcss": "^4.1.6",
     "@tailwindcss/typography": "^0.5.16",
     "@types/bun": "^1.2.13",
