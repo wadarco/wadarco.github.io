@@ -23,8 +23,8 @@ export default function Header() {
                 <ButtonGhost className="p-3">
                   <figure
                     className={clsx(
-                      'inline-block h-4 w-4 bg-current [mask-size:100%_100%]',
-                      '[mask:url(/atom-feed.svg)]',
+                      'mask-no-repeat inline-block h-4 w-4 bg-current',
+                      'mask-[url(/atom-feed.svg)] mask-size-[100%_100%]',
                     )}
                   />
                 </ButtonGhost>
