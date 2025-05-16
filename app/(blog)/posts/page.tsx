@@ -9,26 +9,27 @@ export default async function PostsPage() {
       Stream.flatMap(({ id, data }) => Effect.all({ id: Effect.succeed(id), data })),
       Stream.runCollect,
       Effect.map(Chunk.sort(Post.order)),
+      Effect.map(Chunk.toArray),
       Effect.provide(BunContext.layer),
     ),
   )
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl">
-      <h1 className="pb-10 font-semibold text-xl">Blog posts</h1>
+    <div>
+      <h1 className="pb-8 font-semibold text-3xl">Blog posts</h1>
       <ul className="flex flex-col gap-4">
-        {Chunk.toReadonlyArray(posts).map(({ id, data }) => (
+        {posts.map(({ id, data }) => (
           <li key={id}>
-            <Link href={`/${id}`} about="">
+            <Link href={`/${id}`}>
               <article className="rounded-xl border border-dn-border-100 p-4 hover:bg-dn-background-100">
-                <p className="mb-2 text-dn-color-200/70">
-                  <time dateTime={data.pubDate.toDateString()}>
+                <p className="mb-2 text-dn-foreground-100">
+                  <time className="" dateTime={data.pubDate.toDateString()}>
                     {data.pubDate.toLocaleString('en-US', {
                       dateStyle: 'long',
                     })}
                   </time>
                 </p>
-                <h3 className="text-xl">{data.title}</h3>
+                <h3 className="mb-1 text-xl">{data.title}</h3>
                 <p className="text-dn-foreground-200/80">{data.description}</p>
               </article>
             </Link>
