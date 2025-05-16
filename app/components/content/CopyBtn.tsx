@@ -1,5 +1,6 @@
 'use client'
 
+import clsx from 'clsx'
 import { type MouseEventHandler, type RefObject, useRef, useState } from 'react'
 
 type Props = {
@@ -41,7 +42,10 @@ export default function CopyBtn({ contentElRef }: Props) {
 
   return (
     <button
-      className="cursor-pointer rounded p-2 hover:bg-dn-background-100"
+      className={clsx(
+        'cursor-pointer rounded p-2 hover:bg-dn-background-100',
+        isActive && 'text-dn-primary-200',
+      )}
       type="button"
       onClick={setClipboard}
     >
