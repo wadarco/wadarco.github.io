@@ -48,16 +48,15 @@ export default async function PostPage({ params }: Props) {
           alt={data.title}
         />
       )}
-      <section className="prose lg:prose-lg mx-auto my-8">
-        <h1 className="mb-1">{data.title}</h1>
-        <p className="mt-0 text-dn-foreground-100">
-          <time dateTime={data.pubDate.toDateString()}>
-            {data.pubDate.toLocaleString('en-US', { dateStyle: 'long' })}
-          </time>
-        </p>
-        <p className="font-semibold text-dn-foreground-200 text-xl">{data.description}</p>
-      </section>
-      <section className="prose lg:prose-lg mx-auto">
+      <section className="prose lg:prose-lg mx-auto my-8 ">
+        <time
+          className="mt-0 text-dn-foreground-100"
+          dateTime={data.pubDate.toDateString()}
+        >
+          {data.pubDate.toLocaleString('en-US', { dateStyle: 'long' })}
+        </time>
+        <h1>{data.title}</h1>
+        <p className="text-dn-foreground-100 italic">{data.description}</p>
         <Content components={{ img: ClounaryImage, pre: CodeBlock }} />
       </section>
     </article>
