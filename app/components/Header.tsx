@@ -8,8 +8,10 @@ export default function Header() {
   return (
     <div className="sticky top-0 z-50 bg-dn-background-200/80 backdrop-blur-xs">
       <header className="mx-auto flex max-w-screen-lg items-center justify-between px-4 py-2">
-        <Link className="text-lg" href="/">
-          <span className="font-extrabold text-xl">末吉</span>
+        <Link href="/">
+          <span className="text-dn-foreground-100 hover:text-dn-foreground-200">
+            トップページ
+          </span>
         </Link>
 
         <nav>
