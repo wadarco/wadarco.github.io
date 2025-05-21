@@ -1,5 +1,6 @@
 import { Effect, Option, Order, Schema, Stream } from 'effect'
-import { Content, Rehype } from '~/lib/content-loader'
+import * as Content from '~/content/Content.ts'
+import * as Rehype from '~/content/Rehype.ts'
 
 export const Post = Schema.Struct({
   title: Schema.String,

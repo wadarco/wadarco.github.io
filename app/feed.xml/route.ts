@@ -1,7 +1,7 @@
 import { BunContext } from '@effect/platform-bun'
 import { Chunk, Effect, ManagedRuntime, Stream } from 'effect'
 import * as Post from '~/(blog)/Post.ts'
-import { Content } from '~/lib/content-loader'
+import * as Content from '~/content/Content.ts'
 import * as Atom from './atom.ts'
 
 export async function GET() {
