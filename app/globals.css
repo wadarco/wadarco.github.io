@@ -17,6 +17,8 @@
 
   --font-ibm-plex-sans: var(--font-ibm-plex-sans);
   --font-jetBrains: var(--font-jetBrains-mono);
+  --font-geist: var(--font-geist);
+  --font-geist_mono: var(--font-geist_mono);
 }
 
 @layer theme {

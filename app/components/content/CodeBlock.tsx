@@ -54,7 +54,7 @@ export default function CodeBlock({
       <pre
         className={clsx(
           styles['code-container'],
-          'bg-dn-background-100/30 font-jetBrains',
+          'bg-dn-background-100/30 font-geist_mono',
           className,
         )}
         ref={codeContainerRef}

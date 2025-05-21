@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { IBM_Plex_Sans_JP, JetBrains_Mono } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { BunContext } from '@effect/platform-bun'
 import clsx from 'clsx'
@@ -8,17 +8,16 @@ import * as Image from '~/lib/images/Image.ts'
 import Header from './components/Header.tsx'
 import ThemeScript from './lib/theme/ThemeScript.tsx'
 
-const ibm_plex_sans = IBM_Plex_Sans_JP({
+const geist = Geist({
   display: 'swap',
   subsets: ['latin'],
-  weight: '400',
-  variable: '--font-ibm-plex-sans',
+  variable: '--font-geist',
 })
 
-const jetBrains_Mono = JetBrains_Mono({
+const geist_mono = Geist_Mono({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-jetBrains-mono',
+  variable: '--font-geist_mono',
 })
 
 type Props = Readonly<{
@@ -50,8 +49,8 @@ export default async ({ children }: Props) => {
       <body
         className={clsx(
           'grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-dn-background-200',
-          'font-ibm-plex-sans text-dn-foreground-200 antialiased',
-          `${ibm_plex_sans.variable} ${jetBrains_Mono.variable}`,
+          'font-geist text-dn-foreground-200 antialiased',
+          `${geist} ${geist_mono}`,
         )}
       >
         <ThemeScript />
