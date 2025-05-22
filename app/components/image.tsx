@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect } from 'effect'
 import NextImage from 'next/image'
-import * as Image from '~/lib/images/Image'
+import * as Image from '~/lib/image/Image'
 
 type ImagesProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string

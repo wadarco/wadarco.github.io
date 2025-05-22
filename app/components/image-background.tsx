@@ -1,6 +1,6 @@
 import { BunContext } from '@effect/platform-bun'
 import { Effect } from 'effect'
-import * as Image from '~/lib/images/Image'
+import * as Image from '~/lib/image/Image'
 
 export async function ImageBackground() {
   const bg = await Image.make({ loader: Image.file('app/assets/background.svg') }).pipe(
