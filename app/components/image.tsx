@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect } from 'effect'
 import NextImage from 'next/image'
-import * as Image from '~/lib/images/Image.ts'
+import * as Image from '~/lib/images/Image'
 
 type ImagesProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string
@@ -12,8 +12,8 @@ type ImagesProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 }
 
 export async function Base64Image({ src, width, height, ...props }: ImagesProps) {
-  const { image, metadata } = await Image.remoteLoader(src).pipe(
-    Effect.flatMap((source) => Image.make({ source, width, height })),
+  const { base64, metadata } = await Image.make({ loader: Image.url(src) }).pipe(
+    Effect.flatMap(Effect.all),
     Effect.provide(FetchHttpClient.layer),
     Effect.runPromise,
   )
@@ -24,7 +24,7 @@ export async function Base64Image({ src, width, height, ...props }: ImagesProps)
   return (
     <NextImage
       {...props}
-      src={image}
+      src={base64}
       width={width ?? metadata.width}
       height={height ?? metadata.height}
     />

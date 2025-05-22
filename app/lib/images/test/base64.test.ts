@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
-import * as Image from '../Image.ts'
+import { Image } from '../Image.ts'
 
 describe('Images', () => {
   const file = new File(
@@ -17,7 +17,7 @@ describe('Images', () => {
     const url = URL.createObjectURL(file)
     const content = await file.text()
 
-    await Image.local(url)
+    await Image.file(url)
       .pipe(
         Effect.map((_) => Buffer.from(_).toString('utf-8')),
         Effect.tap((res) => expect(res).toBe(content)),
@@ -34,15 +34,11 @@ describe('Images', () => {
       .then((_) => Buffer.from(_))
       .then((_) => _.toString('base64'))
 
-    const { metadata, image } = await Image.local(url)
-      .pipe(
-        Effect.flatMap((source) => Image.make({ source })),
-        Effect.provide(fileSystemMock),
-        Effect.runPromise,
-      )
+    const { metadata, base64 } = await Image.make({ loader: Image.file(url) })
+      .pipe(Effect.flatMap(Effect.all), Effect.provide(fileSystemMock), Effect.runPromise)
       .finally(() => URL.revokeObjectURL(url))
 
-    expect(image).toBe(`data:image/svg+xml;base64,${content}`)
+    expect(base64).toBe(`data:image/svg+xml;base64,${content}`)
     expect(metadata.format).toBe('svg')
   })
 })

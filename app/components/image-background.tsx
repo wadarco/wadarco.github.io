@@ -1,11 +1,10 @@
 import { BunContext } from '@effect/platform-bun'
 import { Effect } from 'effect'
-import * as Image from '~/lib/images/Image.ts'
+import * as Image from '~/lib/images/Image'
 
 export async function ImageBackground() {
-  const bg = await Image.local('app/assets/background.svg').pipe(
-    Effect.flatMap((source) => Image.make({ source })),
-    Effect.map(({ image }) => image),
+  const bg = await Image.make({ loader: Image.file('app/assets/background.svg') }).pipe(
+    Effect.flatMap(({ base64 }) => base64),
     Effect.provide(BunContext.layer),
     Effect.runPromise,
   )
