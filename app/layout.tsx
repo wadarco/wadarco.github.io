@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import clsx from 'clsx'
 import Header from './components/Header.tsx'
-import { ImageBackground } from './components/image-background.tsx'
+import { ImageBackground } from './components/grainy-background.tsx'
 import ThemeScript from './lib/theme/ThemeScript.tsx'
 
 const geist = Geist({

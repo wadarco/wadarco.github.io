@@ -3,7 +3,9 @@ import { Effect } from 'effect'
 import * as Image from '~/lib/image/Image'
 
 export async function ImageBackground() {
-  const bg = await Image.make({ loader: Image.file('app/assets/background.svg') }).pipe(
+  const bg = await Image.make({
+    loader: Image.file('app/assets/grainy-background.svg'),
+  }).pipe(
     Effect.flatMap(({ base64 }) => base64),
     Effect.provide(BunContext.layer),
     Effect.runPromise,
