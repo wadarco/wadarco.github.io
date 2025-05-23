@@ -21,16 +21,18 @@ export default async function PostsPage() {
         {posts.map(({ id, data }) => (
           <li key={id}>
             <Link href={`/${id}`}>
-              <article className="rounded-xl border border-dn-border-100 p-4 hover:bg-dn-background-100">
-                <p className="mb-2 text-dn-foreground-100">
-                  <time className="" dateTime={data.pubDate.toDateString()}>
-                    {data.pubDate.toLocaleString('en-US', {
-                      dateStyle: 'long',
-                    })}
-                  </time>
-                </p>
-                <h3 className="mb-1 text-xl">{data.title}</h3>
-                <p className="text-dn-foreground-200/80">{data.description}</p>
+              <article className="rounded-lg border border-dn-border-100 p-4 hover:bg-dn-background-100">
+                <time
+                  className="text-dn-foreground-100 text-sm"
+                  dateTime={data.pubDate.toDateString()}
+                >
+                  {data.pubDate.toLocaleString('en-US', {
+                    dateStyle: 'long',
+                  })}
+                </time>
+
+                <h3 className="text-xl">{data.title}</h3>
+                <p className="text-dn-foreground-100">{data.description}</p>
               </article>
             </Link>
           </li>
