@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import clsx from 'clsx'
+import { ImageBackground } from './components/GrainyBackground.tsx'
 import Header from './components/Header.tsx'
-import { ImageBackground } from './components/grainy-background.tsx'
 import ThemeScript from './lib/theme/ThemeScript.tsx'
 
 const geist = Geist({

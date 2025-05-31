@@ -1,9 +1,9 @@
 'use client'
 import type { SVGProps } from 'react'
 import { useTheme } from '~/lib/theme/useTheme.ts'
-import { ButtonGhost } from './ui/button.tsx'
+import { ButtonGhost } from './ui/Button.tsx'
 
-export default function ToggleTheme({ className, ...props }: SVGProps<SVGSVGElement>) {
+export default function ThemeToggle({ className, ...props }: SVGProps<SVGSVGElement>) {
   const { setTheme } = useTheme()
 
   return (

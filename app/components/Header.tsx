@@ -1,8 +1,8 @@
 import clsx from 'clsx'
 import Link from 'next/link'
-import ToggleTheme from './toggle-theme.tsx'
-import { ButtonGhost } from './ui/button.tsx'
-import { Tooltip } from './ui/tooltip.tsx'
+import ThemeToggle from './ThemeToggle.tsx'
+import { ButtonGhost } from './ui/Button.tsx'
+import { Tooltip } from './ui/Tooltip.tsx'
 
 export default function Header() {
   return (
@@ -15,7 +15,7 @@ export default function Header() {
         </Link>
 
         <nav>
-          <div className="grid grid-flow-col content-between items-center gap-1 font-medium">
+          <div className="grid grid-flow-col content-between items-center gap-0.5 font-medium">
             <Link href="/posts">
               <ButtonGhost>Blog</ButtonGhost>
             </Link>
@@ -33,7 +33,7 @@ export default function Header() {
               </Tooltip>
             </a>
 
-            <ToggleTheme className="h-6 w-6" />
+            <ThemeToggle className="h-6 w-6" />
           </div>
         </nav>
       </header>
