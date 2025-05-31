@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import Link from 'next/link'
-import { ToggleTheme } from './toggle-theme.tsx'
+import ToggleTheme from './toggle-theme.tsx'
 import { ButtonGhost } from './ui/button.tsx'
 import { Tooltip } from './ui/tooltip.tsx'
 
@@ -33,7 +33,7 @@ export default function Header() {
               </Tooltip>
             </a>
 
-            <ToggleTheme />
+            <ToggleTheme className="h-6 w-6" />
           </div>
         </nav>
       </header>
