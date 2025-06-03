@@ -1,3 +1,5 @@
+import type { AnchorHTMLAttributes } from 'react'
+
 const HomePage = () => (
   <article className="prose lg:prose-xl mx-auto">
     <h1>Good for health, bad for...</h1>
@@ -24,38 +26,35 @@ const HomePage = () => (
     <ul className="list-[hiragana-iroha]">
       <li>
         <span>Learning </span>
-        <a
-          className="text-dn-primary-200 underline"
-          href="https://effect.website/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Effect-TS.
-        </a>
+        <Link href="https://effect.website/">Effect-TS.</Link>
       </li>
       <li>Reading The Logic of Scientific Discovery</li>
       <li>
         <span>Playing Type Lumina: </span>
-        <a
-          className="text-dn-primary-200 underline"
-          href="https://meltyblood.typelumina.com/resources/img/command/meltyblood_typelumina_neco-arc_command_lists_en.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link href="https://meltyblood.typelumina.com/resources/img/command/meltyblood_typelumina_neco-arc_command_lists_en.pdf">
           Neco-Arc
-        </a>
+        </Link>
         <span> and </span>
-        <a
-          className="text-dn-primary-200 underline"
-          href="https://meltyblood.typelumina.com/resources/img/command/meltyblood_typelumina_kohaku_command_lists_en.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link href="https://meltyblood.typelumina.com/resources/img/command/meltyblood_typelumina_kohaku_command_lists_en.pdf">
           Kohaku.
-        </a>
+        </Link>
       </li>
     </ul>
   </article>
 )
+
+const Link: React.FC<AnchorHTMLAttributes<HTMLAnchorElement>> = ({
+  className,
+  ...props
+}) => {
+  return (
+    <a
+      className={`text-dn-primary-200 no-underline decoration-2 underline-offset-2 hover:underline ${className}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+    />
+  )
+}
 
 export default HomePage
