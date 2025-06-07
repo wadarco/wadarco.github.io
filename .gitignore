@@ -42,3 +42,6 @@ next-env.d.ts
 
 # remote assets
 *cached
+
+# Image optimization cache
+public/images

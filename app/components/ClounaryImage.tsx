@@ -1,9 +1,9 @@
+import { Actions, CloudinaryImage } from '@cloudinary/url-gen'
 import { FetchHttpClient } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
-import { Effect, Layer, ManagedRuntime } from 'effect'
-import Image from 'next/image'
-import * as Cloudinary from '~/utils/Cloudinary.ts'
-import * as RemoteImage from '~/utils/RemoteImage.ts'
+import { Config, Effect } from 'effect'
+import NextImage from 'next/image'
+import * as Image from '~/lib/image/Image.ts'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string
@@ -11,27 +11,36 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   priority?: boolean
 }
 
-const runtime = ManagedRuntime.make(
-  Layer.mergeAll(BunContext.layer, FetchHttpClient.layer),
-)
-
 export default async function ClounaryImage({ src: id, ...props }: Props) {
-  const { img, metadata } = await Cloudinary.imageURL({ ...props, id }).pipe(
-    Effect.flatMap(Cloudinary.fetchImage),
-    Effect.map((buffer) => new Uint8Array(buffer)),
-    Effect.flatMap((buffer) =>
+  const makeCloudinaryImage = (cloudName: string) =>
+    new CloudinaryImage(id, { cloudName })
+      .resize(Actions.Resize.scale(props.width, props.height))
+      .format('webp')
+      .toURL()
+
+  const { src, metadata } = await Config.string('CLOUDINARY_CLOUD_NAME').pipe(
+    Effect.map(makeCloudinaryImage),
+    Effect.flatMap(Image.fromUrl),
+    Effect.flatMap((img) =>
       Effect.all({
-        img: RemoteImage.make(id, buffer),
-        metadata: RemoteImage.metadata(buffer),
+        src: Image.getUrl(img),
+        metadata: Image.getMetadata(img),
       }),
     ),
-    runtime.runPromise,
+    Effect.provide(BunContext.layer),
+    Effect.provide(FetchHttpClient.layer),
+    Effect.runPromise,
   )
 
   if (!metadata.width || !metadata.height) {
     throw new Error('Failed to read image metadata')
   }
   return (
-    <Image {...props} width={metadata.width} height={metadata.height} src={`/${img}`} />
+    <NextImage
+      {...props}
+      width={metadata.width}
+      height={metadata.height}
+      src={`/${src}`}
+    />
   )
 }
