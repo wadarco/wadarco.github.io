@@ -58,8 +58,11 @@ export const fromUrl = Effect.fn(function* (url: string | URL) {
 })
 
 export const getUrl = (image: Image) => {
-  const { origin, data } = image[ImageTypeId]
-  const filePath = `images/${Bun.hash(origin)}`
+  const { origin, data, format } = image[ImageTypeId]
+  const filePath = Option.match(format, {
+    onNone: () => `images/${Bun.hash(origin)}`,
+    onSome: (format) => `images/${Bun.hash(origin)}.${format}`,
+  })
 
   return FileSystem.FileSystem.pipe(
     Effect.tap((fs) => fs.makeDirectory('public/images', { recursive: true })),
