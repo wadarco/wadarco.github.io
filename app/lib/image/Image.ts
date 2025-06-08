@@ -1,6 +1,7 @@
 import { FileSystem, Headers, HttpClient, Path } from '@effect/platform'
 import { Effect, Option, pipe } from 'effect'
 import sharp from 'sharp'
+import * as Cloudinary from './Cloudinary.ts'
 
 const ImageTypeId: unique symbol = Symbol.for('@image/Image')
 
@@ -56,6 +57,9 @@ export const fromUrl = Effect.fn(function* (url: string | URL) {
     ),
   })
 })
+
+export const fromCloudinary = (id: string, options: Cloudinary.Options) =>
+  Effect.flatMap(Cloudinary.makeImage(id, options), fromUrl)
 
 export const getUrl = (image: Image) => {
   const { origin, data, format } = image[ImageTypeId]

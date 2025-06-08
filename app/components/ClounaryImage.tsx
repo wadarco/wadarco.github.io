@@ -1,7 +1,6 @@
-import { Actions, CloudinaryImage } from '@cloudinary/url-gen'
 import { FetchHttpClient } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
-import { Config, Effect } from 'effect'
+import { Effect } from 'effect'
 import NextImage from 'next/image'
 import * as Image from '~/lib/image/Image.ts'
 
@@ -12,20 +11,16 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
 }
 
 export default async function ClounaryImage({ src: id, ...props }: Props) {
-  const makeCloudinaryImage = (cloudName: string) =>
-    new CloudinaryImage(id, { cloudName })
-      .resize(Actions.Resize.scale(props.width, props.height))
-      .format('webp')
-      .toURL()
-
-  const { src, metadata } = await Config.string('CLOUDINARY_CLOUD_NAME').pipe(
-    Effect.map(makeCloudinaryImage),
-    Effect.flatMap(Image.fromUrl),
+  const options = { width: Number(props.width), height: Number(props.height) }
+  const { src, metadata } = await Image.fromCloudinary(id, options).pipe(
     Effect.flatMap((img) =>
-      Effect.all({
-        src: Image.getUrl(img),
-        metadata: Image.getMetadata(img),
-      }),
+      Effect.all(
+        {
+          src: Image.getUrl(img),
+          metadata: Image.getMetadata(img),
+        },
+        { batching: true },
+      ),
     ),
     Effect.provide(BunContext.layer),
     Effect.provide(FetchHttpClient.layer),
