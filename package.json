@@ -16,7 +16,7 @@
   "devDependencies": {
     "@cloudinary/url-gen": "^1.21.0",
     "@effect/platform": "^0.84.9",
-    "@effect/platform-bun": "^0.68.2",
+    "@effect/platform-bun": "^0.69.11",
     "@shikijs/rehype": "^3.6.0",
     "@tailwindcss/postcss": "^4.1.8",
     "@tailwindcss/typography": "^0.5.16",
