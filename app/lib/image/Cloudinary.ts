@@ -1,5 +1,6 @@
 import { Actions, CloudinaryImage } from '@cloudinary/url-gen/index'
-import { Config, Effect } from 'effect'
+import { Config, Effect, flow } from 'effect'
+import * as Builder from './internal/imageBuilder'
 
 export type Options = {
   readonly width?: number | undefined
@@ -19,3 +20,5 @@ export const makeImage = (id: string, options?: Options) => {
     Effect.map((img) => img.toURL()),
   )
 }
+
+export const fromCloudinary = flow(makeImage, Effect.flatMap(Builder.fromUrl))

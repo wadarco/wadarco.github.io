@@ -2,7 +2,7 @@ import { FetchHttpClient } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
 import { Effect } from 'effect'
 import NextImage from 'next/image'
-import * as Image from '~/lib/image/Image.ts'
+import * as Image from '~/lib/image'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string
