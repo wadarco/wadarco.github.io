@@ -28,7 +28,7 @@
     "fast-xml-parser": "^5.2.3",
     "lefthook": "^1.11.13",
     "mdx-bundler": "^10.1.1",
-    "msw": "^2.8.7",
+    "msw": "^2.10.2",
     "serve": "^14.2.4",
     "sharp": "^0.34.2",
     "tailwindcss": "^4.1.8",
