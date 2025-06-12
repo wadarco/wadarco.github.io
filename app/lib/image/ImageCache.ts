@@ -2,7 +2,7 @@ import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Effect, Option } from 'effect'
 
-const ImageCacheType: unique symbol = Symbol.for('@image/Image')
+const ImageCacheType: unique symbol = Symbol.for('@image/Cache')
 
 interface CacheData {
   readonly origin: string
