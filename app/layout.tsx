@@ -40,7 +40,7 @@ export default async ({ children }: Props) => (
       className={clsx(
         'grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-dn-background-200',
         'font-geist text-dn-foreground-200 antialiased',
-        `${geist} ${geist_mono}`,
+        `${geist.variable} ${geist_mono.variable}`,
       )}
     >
       <ThemeScript />
