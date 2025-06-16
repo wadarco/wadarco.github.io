@@ -3,7 +3,6 @@
 import clsx from 'clsx'
 import { type ComponentProps, type RefObject, useRef, useState } from 'react'
 import CopyBtn from './CopyBtn.tsx'
-import LanguageIcon from './LanguageIcon.tsx'
 import styles from './styles.module.css'
 
 type CodeBlockProps = ComponentProps<'pre'> & {
@@ -35,7 +34,9 @@ export default function CodeBlock({
         {filename ? (
           <div className="flex items-center justify-between border-dn-border-100 border-b px-4 py-2">
             <div className="inline-flex items-center gap-2">
-              <LanguageIcon language={language === 'fish' ? 'bash' : language} />
+              <figure
+                className={`mask-icon ${language === 'fish' ? 'bash' : language}-icon h-4.5 w-4.5`}
+              />
               <span>{filename}</span>
             </div>
             <CopyBtn contentElRef={codeContainerRef} />
