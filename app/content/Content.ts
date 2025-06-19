@@ -21,15 +21,17 @@ export const glob = ({
   Source<PlatformError, FileSystem.FileSystem | Path.Path>,
   PlatformError,
   FileSystem.FileSystem | Path.Path
-> =>
-  Stream.Do.pipe(
+> => {
+  const globMatcher = new Bun.Glob(pattern)
+
+  return Stream.Do.pipe(
     Stream.bind('fs', () => FileSystem.FileSystem),
     Stream.bind('path', () => Path.Path),
     Stream.flatMap(({ fs, path }) =>
       fs.readDirectory(base, { recursive: true }).pipe(
         Stream.fromIterableEffect,
         Stream.map((f) => path.join(base, f)),
-        Stream.filter((f) => new Bun.Glob(pattern).match(f)),
+        Stream.filter((f) => globMatcher.match(f)),
         Stream.filterEffect((f) =>
           fs.stat(f).pipe(Effect.map((info) => info.type === 'File')),
         ),
@@ -42,6 +44,7 @@ export const glob = ({
       ),
     ),
   )
+}
 
 type MakeContentArgs<E, R, A, I> = {
   source: Stream.Stream<Source<E, R>, E, R>
