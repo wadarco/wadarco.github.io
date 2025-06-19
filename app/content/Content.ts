@@ -1,6 +1,6 @@
 import { FileSystem, Path } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import { Effect, Schema, Stream } from 'effect'
+import { Effect, Schema, Stream, pipe } from 'effect'
 import { getMDXComponent } from 'mdx-bundler/client'
 import type { Pluggable } from 'unified'
 import * as ContentBuilder from './internal/contentBuilder.ts'
@@ -10,36 +10,43 @@ export type Source<out E, out R> = {
   file: Effect.Effect<string, E, R>
 }
 
-type Glob = {
-  base: string
-  pattern: string
+interface GlobOptions {
+  readonly base: string
+  readonly pattern: string
+  readonly concurrency?: number | 'unbounded'
 }
-export const glob = ({
-  base,
-  pattern,
-}: Glob): Stream.Stream<
+type GlobSource = Stream.Stream<
   Source<PlatformError, FileSystem.FileSystem | Path.Path>,
   PlatformError,
   FileSystem.FileSystem | Path.Path
-> => {
-  const globMatcher = new Bun.Glob(pattern)
+>
+
+export const glob = (options: GlobOptions): GlobSource => {
+  const globMatcher = new Bun.Glob(options.pattern)
+  const concurrency = options.concurrency ?? 'unbounded'
 
   return Stream.Do.pipe(
     Stream.bind('fs', () => FileSystem.FileSystem),
     Stream.bind('path', () => Path.Path),
     Stream.flatMap(({ fs, path }) =>
-      fs.readDirectory(base, { recursive: true }).pipe(
+      pipe(
+        fs.readDirectory(options.base, { recursive: true }),
         Stream.fromIterableEffect,
-        Stream.map((f) => path.join(base, f)),
-        Stream.filter((f) => globMatcher.match(f)),
-        Stream.filterEffect((f) =>
-          fs.stat(f).pipe(Effect.map((info) => info.type === 'File')),
+        Stream.map((file) => path.join(options.base, file)),
+        Stream.filter((fullPath) => globMatcher.match(fullPath)),
+        Stream.filterEffect((fullPath) =>
+          fs.stat(fullPath).pipe(
+            Effect.map((info) => info.type === 'File'),
+            Effect.catchAll(() => Effect.succeed(false)),
+          ),
         ),
-        Stream.mapEffect((f) =>
-          Effect.all({
-            url: path.toFileUrl(f),
-            file: Effect.cached(fs.readFileString(f, 'utf-8')),
-          }),
+        Stream.mapEffect(
+          (fullPath) =>
+            Effect.all({
+              url: path.toFileUrl(fullPath),
+              file: Effect.cached(fs.readFileString(fullPath, 'utf-8')),
+            }),
+          { concurrency },
         ),
       ),
     ),
