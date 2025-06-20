@@ -2,8 +2,8 @@
 
 import clsx from 'clsx'
 import { type ComponentProps, useRef } from 'react'
-import { CopyToClipboardAbsolute, CopyToClipboardInline } from './CopyBtn.tsx'
-import styles from './styles.module.css'
+import { CopyToClipboardAbsolute, CopyToClipboardInline } from './Clipboard.tsx'
+import styles from './codeBlock.module.css'
 
 type CodeBlockProps = ComponentProps<'pre'> & {
   'data-language': string
