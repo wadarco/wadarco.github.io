@@ -5,7 +5,7 @@ import { type ComponentProps, useRef } from 'react'
 import { CopyToClipboardAbsolute, CopyToClipboardInline } from './Clipboard.tsx'
 import styles from './codeBlock.module.css'
 
-type CodeBlockProps = ComponentProps<'pre'> & {
+interface CodeBlockProps extends ComponentProps<'pre'> {
   'data-language': string
   'data-filename'?: string
   'data-hide-line-numbers': boolean
@@ -20,13 +20,12 @@ export default function CodeBlock({
   children,
   ...props
 }: CodeBlockProps) {
-  const codeContainerRef = useRef<HTMLPreElement>(null)
+  const ref = useRef<HTMLPreElement>(null)
 
   return (
     <div
       className={clsx(
-        'group my-8 prose-pre:my-0 prose-pre:rounded-none border-dn-border-100',
-        'overflow-hidden rounded-md border',
+        'group my-8 prose-pre:my-0 overflow-hidden prose-pre:rounded-none rounded-md border border-dn-border-100',
         className,
       )}
     >
@@ -39,22 +38,18 @@ export default function CodeBlock({
               />
               <span>{filename}</span>
             </div>
-            <CopyToClipboardInline contentElRef={codeContainerRef} />
+            <CopyToClipboardInline contentElRef={ref} />
           </div>
         ) : (
           <div className="relative">
-            <CopyToClipboardAbsolute contentElRef={codeContainerRef} />
+            <CopyToClipboardAbsolute contentElRef={ref} />
           </div>
         )}
       </div>
 
       <pre
-        className={clsx(
-          styles['code-container'],
-          'bg-dn-background-100/30 font-geist_mono',
-          className,
-        )}
-        ref={codeContainerRef}
+        ref={ref}
+        className={`${styles['code-container']} bg-dn-background-100/30 font-geist_mono ${className}`}
         data-hide-line-numbers={(hideLineNumbers ?? !filename) ? '' : null}
         {...props}
       >
