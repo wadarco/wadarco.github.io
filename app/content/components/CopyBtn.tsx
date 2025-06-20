@@ -3,60 +3,96 @@
 import clsx from 'clsx'
 import { ClipboardCheckIcon, ClipboardIcon } from 'lucide-react'
 import { type MouseEventHandler, type RefObject, useRef, useState } from 'react'
+import Button from '~/components/ui/Button'
 
-type Props = {
+interface Props {
   contentElRef: RefObject<Element | null>
 }
 
-export default function CopyBtn({ contentElRef }: Props) {
+function useClipboard({ contentElRef }: Props) {
   const [isActive, setIsActive] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const iconRef = useRef<HTMLDivElement>(null)
-
   const keyframes = [
     { transform: 'scale(1)', opacity: '1' },
     { transform: 'scale(0.5)', opacity: '0' },
   ]
 
-  const setClipboard: MouseEventHandler<HTMLButtonElement> = async () => {
-    const svg = iconRef.current
-    if (isAnimating || !contentElRef.current?.textContent || !svg) {
-      return null
-    }
-    const animate = async () => {
-      await svg.animate(keyframes, { duration: 150 }).finished
-    }
-    const animateReverse = async () => {
-      await svg.animate(keyframes.slice().reverse(), { duration: 150 }).finished
-    }
+  const animateIcon = async (reverse = false) => {
+    await iconRef.current?.animate(reverse ? keyframes.slice().reverse() : keyframes, {
+      duration: 100,
+    }).finished
+  }
 
-    navigator.clipboard.writeText(contentElRef.current.textContent)
+  const copyToClipboard = async () => {
+    const content = contentElRef.current?.textContent
+    if (isAnimating || !content) return
+
+    navigator.clipboard.writeText(content)
     setIsAnimating(true)
-    await animate().then(() => setIsActive(true))
-    await animateReverse()
 
-    setTimeout(async () => {
-      await animate().then(() => setIsActive(false))
-      await animateReverse().then(() => setIsAnimating(false))
-    }, 800)
+    await animateIcon().then(() => setIsActive(true))
+    await animateIcon(true)
+    await new Promise((resolve) => setTimeout(resolve, 1900))
+    await animateIcon().then(() => setIsActive(false))
+    await animateIcon(true).then(() => setIsAnimating(false))
+  }
+
+  return { isActive, isAnimating, iconRef, copyToClipboard }
+}
+
+function Base({
+  isActive,
+  ref,
+}: { isActive: boolean; ref: RefObject<HTMLElement | null> }) {
+  return (
+    <figure ref={ref} className={clsx(isActive && 'text-dn-primary-200')}>
+      {isActive ? (
+        <ClipboardCheckIcon width="16" height="16" />
+      ) : (
+        <ClipboardIcon width="16" height="16" />
+      )}
+    </figure>
+  )
+}
+
+export function CopyToClipboardInline({ contentElRef }: Props) {
+  const { isActive, iconRef, copyToClipboard } = useClipboard({ contentElRef })
+
+  return (
+    <Button
+      variant="ghost"
+      onClick={copyToClipboard}
+      className="cursor-pointer rounded p-2 hover:bg-dn-background-100"
+    >
+      <Base isActive={isActive} ref={iconRef} />
+    </Button>
+  )
+}
+
+export function CopyToClipboardAbsolute({ contentElRef }: Props) {
+  const [isVisible, setIsVisible] = useState(false)
+  const [timer, setTimer] = useState<Timer>()
+  const { isActive, iconRef, copyToClipboard } = useClipboard({ contentElRef })
+
+  const onClick: MouseEventHandler<HTMLButtonElement> = () => {
+    clearTimeout(timer)
+    setIsVisible(true)
+    copyToClipboard()
+    setTimer(setTimeout(() => setIsVisible(false), 4000))
   }
 
   return (
-    <button
+    <Button
+      variant="outline"
       className={clsx(
-        'cursor-pointer rounded p-2 hover:bg-dn-background-100',
-        isActive && 'text-dn-primary-200',
+        'absolute top-0 right-0 m-2 flex overflow-hidden rounded-md border',
+        'bg-dn-background-200/40 group-hover:visible',
+        !isVisible && 'invisible',
       )}
-      type="button"
-      onClick={setClipboard}
+      onClick={onClick}
     >
-      <div ref={iconRef}>
-        {isActive ? (
-          <ClipboardCheckIcon width="16" height="16" />
-        ) : (
-          <ClipboardIcon width="16" height="16" />
-        )}
-      </div>
-    </button>
+      <Base ref={iconRef} isActive={isActive} />
+    </Button>
   )
 }
