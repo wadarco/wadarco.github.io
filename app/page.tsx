@@ -1,7 +1,7 @@
 import type { AnchorHTMLAttributes } from 'react'
 
 const HomePage = () => (
-  <article className="prose lg:prose-xl mx-auto">
+  <article className="prose md:prose-lg mx-auto">
     <h1>Good for health, bad for...</h1>
     <p className="text-dn-foreground-100 italic">tl;dr: functors...</p>
     <p>
@@ -28,7 +28,7 @@ const HomePage = () => (
         <span>Learning </span>
         <Link href="https://effect.website/">Effect-TS.</Link>
       </li>
-      <li>Reading The Logic of Scientific Discovery</li>
+      <li>Reading 20th Century Boys</li>
       <li>
         <span>Playing Type Lumina: </span>
         <Link href="https://meltyblood.typelumina.com/resources/img/command/meltyblood_typelumina_neco-arc_command_lists_en.pdf">
