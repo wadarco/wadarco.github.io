@@ -1,13 +1,25 @@
 import type { ButtonHTMLAttributes } from 'react'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { children: React.ReactNode }
+type Variant = 'ghost'
 
-export const ButtonGhost = ({ children, className, ...props }: ButtonProps) => (
-  <button
-    {...props}
-    className={`flex cursor-pointer items-center rounded-md p-2 hover:bg-dn-background-100 ${className}`}
-    type="button"
-  >
-    {children}
-  </button>
-)
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  readonly children: React.ReactNode
+  readonly variant: Variant
+}
+
+export default function Button({ children, variant, className, ...props }: ButtonProps) {
+  const base = 'flex cursor-pointer items-center rounded-md p-2'
+  const variants: Record<Variant, string> = {
+    ghost: 'hover:bg-dn-background-100 focus:bg-dn-background-100',
+  }
+
+  return (
+    <button
+      {...props}
+      type="button"
+      className={`${base} ${variants[variant]} ${className}`}
+    >
+      {children}
+    </button>
+  )
+}

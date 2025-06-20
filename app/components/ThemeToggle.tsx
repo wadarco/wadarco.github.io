@@ -2,7 +2,7 @@
 import { type LucideProps, MoonIcon, SunIcon } from 'lucide-react'
 import type { SVGProps } from 'react'
 import { useTheme } from '~/lib/theme/useTheme.ts'
-import { ButtonGhost } from './ui/Button.tsx'
+import Button from './ui/Button.tsx'
 
 export default function ThemeToggle({
   className,
@@ -11,7 +11,8 @@ export default function ThemeToggle({
   const { setTheme } = useTheme()
 
   return (
-    <ButtonGhost
+    <Button
+      variant="ghost"
       onClick={() => {
         setTheme((theme) => ({
           colorScheme: theme.colorScheme === 'dark' ? 'light' : 'dark',
@@ -20,6 +21,6 @@ export default function ThemeToggle({
     >
       <SunIcon className={`inline-block dark:hidden ${className}`} {...props} />
       <MoonIcon className={`hidden dark:inline-block ${className}`} {...props} />
-    </ButtonGhost>
+    </Button>
   )
 }

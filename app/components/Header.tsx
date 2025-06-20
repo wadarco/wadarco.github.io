@@ -1,7 +1,7 @@
 import { RssIcon } from 'lucide-react'
 import Link from 'next/link'
 import ThemeToggle from './ThemeToggle.tsx'
-import { ButtonGhost } from './ui/Button.tsx'
+import Button from './ui/Button.tsx'
 import { Tooltip } from './ui/Tooltip.tsx'
 
 export default function Header() {
@@ -17,14 +17,14 @@ export default function Header() {
         <nav>
           <div className="grid grid-flow-col content-between items-center gap-1 font-medium">
             <Link href="/posts">
-              <ButtonGhost>Blog</ButtonGhost>
+              <Button variant="ghost">Blog</Button>
             </Link>
 
             <a className="flex" href="/feed.xml" target="_blank" rel="noreferrer">
               <Tooltip content={<span className="text-xs">Web feed</span>}>
-                <ButtonGhost>
+                <Button variant="ghost">
                   <RssIcon strokeWidth={3} />
-                </ButtonGhost>
+                </Button>
               </Tooltip>
             </a>
 
