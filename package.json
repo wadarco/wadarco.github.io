@@ -21,7 +21,7 @@
     "@shikijs/rehype": "^3.7.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/bun": "^1.2.16",
+    "@types/bun": "^1.2.17",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "babel-plugin-react-compiler": "^19.0.0-beta-714736e-20250131",
