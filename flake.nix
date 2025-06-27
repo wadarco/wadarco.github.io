@@ -21,19 +21,12 @@
         {
           default = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [
-              (bun.overrideAttrs (oldAttrs: {
-                # Fix Sharp installation: depends on libstdc++.so.6
-                buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ stdenv.cc.cc ];
-                postFixup =
-                  (oldAttrs.postFixup or "")
-                  + ''
-                    export LD_LIBRARY_PATH="${stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
-                  '';
-              }))
+              bun
               biome
             ];
             env = with pkgs; {
               BIOME_BINARY = "${biome}/bin/biome";
+              # Fix Sharp installation: depends on libstdc++.so.6
               LD_LIBRARY_PATH = "${stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH";
             };
           };
