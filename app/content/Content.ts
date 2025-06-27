@@ -1,6 +1,6 @@
 import { FileSystem, Path } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import { Effect, Schema, Stream, pipe } from 'effect'
+import { Effect, pipe, Schema, Stream } from 'effect'
 import { getMDXComponent } from 'mdx-bundler/client'
 import type { Pluggable } from 'unified'
 import * as ContentBuilder from './internal/contentBuilder.ts'

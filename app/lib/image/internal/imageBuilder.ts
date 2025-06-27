@@ -1,5 +1,5 @@
 import { FileSystem, Headers, HttpClient, Path } from '@effect/platform'
-import { Effect, Option, flow, pipe } from 'effect'
+import { Effect, flow, Option, pipe } from 'effect'
 import sharp from 'sharp'
 
 export const ImageTypeId: unique symbol = Symbol.for('@image/Image')

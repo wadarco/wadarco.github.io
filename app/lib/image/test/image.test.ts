@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
 import { FetchHttpClient, FileSystem } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
 import { Effect } from 'effect'
-import { http, HttpResponse } from 'msw'
+import { HttpResponse, http } from 'msw'
 import { setupServer } from 'msw/native'
 import * as Image from '../Image.ts'
 

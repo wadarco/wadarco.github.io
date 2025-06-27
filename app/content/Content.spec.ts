@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
 import { FileSystem } from '@effect/platform'
-import { BunContext } from '@effect/platform-bun'
 import type { PlatformError } from '@effect/platform/Error'
 import type { File } from '@effect/platform/FileSystem'
+import { BunContext } from '@effect/platform-bun'
 import { Effect, Option, Schema, Stream } from 'effect'
 import * as Content from './Content.ts'
 

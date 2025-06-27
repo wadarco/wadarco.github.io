@@ -44,7 +44,10 @@ function useClipboard({ contentElRef }: Props) {
 function Base({
   isActive,
   ref,
-}: { isActive: boolean; ref: RefObject<HTMLElement | null> }) {
+}: {
+  isActive: boolean
+  ref: RefObject<HTMLElement | null>
+}) {
   return (
     <figure ref={ref} className={clsx(isActive && 'text-dn-primary-200')}>
       {isActive ? (

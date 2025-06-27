@@ -1,4 +1,4 @@
-import { Config, Effect, Schema, pipe } from 'effect'
+import { Config, Effect, pipe, Schema } from 'effect'
 import { XMLBuilder } from 'fast-xml-parser'
 
 type AtomSchema = typeof AtomSchema.Type

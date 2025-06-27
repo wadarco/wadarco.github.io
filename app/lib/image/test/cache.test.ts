@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, test } from 'bun:test'
 import { BunContext } from '@effect/platform-bun'
 import { Effect, Option, pipe } from 'effect'
-import { http, HttpResponse } from 'msw'
+import { HttpResponse, http } from 'msw'
 import { setupServer } from 'msw/native'
 import * as Cache from '../ImageCache.ts'
 

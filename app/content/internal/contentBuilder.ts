@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
-import { bundleMDX } from 'mdx-bundler'
 import type { MDXContent } from 'mdx/types'
+import { bundleMDX } from 'mdx-bundler'
 import type { Pluggable } from 'unified'
 
 export type Content<Data, E, R> = {
