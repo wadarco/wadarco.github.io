@@ -30,12 +30,6 @@
                     export LD_LIBRARY_PATH="${stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
                   '';
               }))
-              (writeShellScriptBin "act" ''
-                #!/bin/bash
-                DOCKER_HOST = "unix:///run/user/1000/podman/podman.sock";
-                ${podman}/bin/podman system service --time 4 & sleep 1
-                ${act}/bin/act $@
-              '')
               biome
             ];
             env = with pkgs; {
