@@ -9,7 +9,7 @@ const parseMetaString = (metaString: string) =>
     metaString.split(' '),
     Effect.reduce({}, (acc, item) => {
       const [k, v] = item.split('=')
-      return Effect.succeed(Object.assign(acc, { [`data-${k}`]: v }))
+      return Effect.succeed(Object.assign(Object.create(acc), { [`data-${k}`]: v }))
     }),
   )
 
