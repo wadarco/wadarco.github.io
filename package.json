@@ -19,7 +19,7 @@
     "@effect/platform": "^0.85.2",
     "@effect/platform-bun": "^0.72.3",
     "@shikijs/rehype": "^3.7.0",
-    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.16",
     "@types/bun": "^1.2.17",
     "@types/react": "^19.1.8",
