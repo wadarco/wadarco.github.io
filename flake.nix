@@ -12,17 +12,14 @@
     {
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            bun
-            biome
-          ];
-          env = with pkgs; {
-            BIOME_BINARY = "${biome}/bin/biome";
-            # Fix Sharp installation: depends on libstdc++.so.6
-            LD_LIBRARY_PATH = "${stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH";
+          buildInputs = [ pkgs.bun ];
+
+          env = with pkgs; rec {
+            NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [ stdenv.cc.cc ];
+            NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
+            LD_LIBRARY_PATH = NIX_LD_LIBRARY_PATH;
           };
         };
-
       });
       formatter = eachSystem (pkgs: pkgs.nixfmt-rfc-style);
     };
