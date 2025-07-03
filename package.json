@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "serve out"
+    "start": "serve out",
+    "check": "biome check --write --unsafe"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -15,6 +16,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.6",
     "@cloudinary/url-gen": "^1.21.0",
     "@effect/platform": "^0.87.1",
     "@effect/platform-bun": "^0.72.3",
