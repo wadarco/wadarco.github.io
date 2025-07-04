@@ -1,10 +1,10 @@
+import clsx from 'clsx'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-import clsx from 'clsx'
 import { ImageBackground } from './components/GrainyBackground.tsx'
 import Header from './components/Header.tsx'
 import ThemeScript from './lib/theme/ThemeScript.tsx'
+import './globals.css'
 
 const geist = Geist({
   display: 'swap',
