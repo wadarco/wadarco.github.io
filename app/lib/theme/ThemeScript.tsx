@@ -4,15 +4,15 @@ import { useEffect } from 'react'
 import { useTheme } from './useTheme.ts'
 
 export default function ThemeScript() {
-  const { colorScheme, accentColor } = useTheme()
+  const { theme } = useTheme()
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', colorScheme === 'dark')
-  }, [colorScheme])
+    document.documentElement.classList.toggle('dark', theme.isDark)
+  }, [theme.isDark])
 
   useEffect(() => {
-    document.documentElement.setAttribute('accent-color', accentColor)
-  }, [accentColor])
+    document.documentElement.setAttribute('accent-color', theme.colorScheme)
+  }, [theme.colorScheme])
 
   return <script suppressHydrationWarning>{`(${preloadTheme})()`}</script>
 }

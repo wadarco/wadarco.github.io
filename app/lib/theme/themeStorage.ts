@@ -1,6 +1,6 @@
 type Theme = {
-  colorScheme: 'dark' | 'light'
-  accentColor: string
+  colorScheme: string
+  isDark: boolean
 }
 
 type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> }
@@ -15,46 +15,42 @@ export const getTheme = (storageKey: string): Theme => {
   try {
     const stringify = localStorage.getItem(storageKey) ?? '{}'
     const theme: Theme = JSON.parse(stringify)
-    if (
-      (theme.colorScheme === 'dark' || theme.colorScheme === 'light') &&
-      ['blue'].includes(theme.accentColor)
-    ) {
+    if (typeof theme.isDark !== 'undefined' && ['blue'].includes(theme.colorScheme)) {
       return theme
     }
   } catch {}
   return {
-    colorScheme: getSystemPrefer()?.matches ? 'dark' : 'light',
-    accentColor: 'blue',
+    colorScheme: 'blue',
+    isDark: !!getSystemPrefer()?.matches,
   }
 }
 
 export function createThemeStorage(storageKey: string) {
   const listeners = new Set<() => void>()
-  let theme = getTheme(storageKey)
+  let store = { theme: getTheme(storageKey) }
 
   const emitChange = () => {
-    theme = getTheme(storageKey)
+    store = { theme: getTheme(storageKey) }
     for (const listener of listeners) listener()
   }
 
   const setTheme: SetState<Theme> = (value) => {
-    const systemPrefer = getSystemPrefer()?.matches ? 'dark' : 'light'
-    const nextState = Object.assign(
+    const systemPrefer = getSystemPrefer()?.matches
+    const theme = Object.assign(
       {},
-      theme,
-      value instanceof Function ? value(theme) : value,
+      { ...store.theme, ...(value instanceof Function ? value(store.theme) : value) },
     )
 
     localStorage.setItem(
       storageKey,
       JSON.stringify({
-        ...nextState,
-        colorScheme:
-          nextState.colorScheme === systemPrefer ? 'auto' : nextState.colorScheme,
-      }),
+        isDark: theme.isDark === systemPrefer ? 'auto' : theme.isDark,
+        colorScheme: theme.colorScheme,
+      } as Theme),
     )
     emitChange()
-    return nextState
+
+    return theme
   }
 
   const makeSubscribe = () => {
@@ -78,6 +74,6 @@ export function createThemeStorage(storageKey: string) {
 
   return {
     subscribe: makeSubscribe(),
-    getSnapshot: () => Object.assign(theme, { setTheme }),
+    getSnapshot: () => Object.assign(store, { setTheme }),
   }
 }

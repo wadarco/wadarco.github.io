@@ -12,7 +12,7 @@ export default function ThemeToggle({ className, ...props }: ThemeToggleProps) {
 
   const onClick: MouseEventHandler<HTMLButtonElement> = () => {
     setTheme((theme) => ({
-      colorScheme: theme.colorScheme === 'dark' ? 'light' : 'dark',
+      isDark: !theme.isDark,
     }))
   }
 
