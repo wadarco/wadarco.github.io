@@ -1,6 +1,10 @@
-type Theme = {
-  colorScheme: string
-  isDark: boolean
+interface Theme {
+  readonly colorScheme: string
+  readonly isDark: boolean
+}
+
+export interface LocalStorageTheme extends Omit<Theme, 'isDark'> {
+  readonly isDark: boolean | 'auto'
 }
 
 type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> }
@@ -14,9 +18,12 @@ const getSystemPrefer = () =>
 export const getTheme = (storageKey: string): Theme => {
   try {
     const stringify = localStorage.getItem(storageKey) ?? '{}'
-    const theme: Theme = JSON.parse(stringify)
-    if (typeof theme.isDark !== 'undefined' && ['blue'].includes(theme.colorScheme)) {
-      return theme
+    const { isDark = 'auto', colorScheme = 'blue' }: LocalStorageTheme =
+      JSON.parse(stringify)
+
+    return {
+      isDark: isDark === 'auto' ? !!getSystemPrefer()?.matches : isDark,
+      colorScheme: ['blue'].includes(colorScheme) ? colorScheme : 'blue',
     }
   } catch {}
   return {
