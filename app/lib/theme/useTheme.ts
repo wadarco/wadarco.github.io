@@ -7,5 +7,5 @@ export const useTheme = () =>
   useSyncExternalStore(
     themeStorage.subscribe,
     themeStorage.getSnapshot,
-    themeStorage.getSnapshot,
+    themeStorage.getServerSnapshot,
   )
