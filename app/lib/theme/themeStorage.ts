@@ -14,7 +14,6 @@ type SetState<T extends Theme> = (
 
 const media = '(prefers-color-scheme: dark)'
 const colorschemes = ['blue']
-const defaultTheme = { colorScheme: 'blue', isDark: false }
 
 function getTheme(storageKey: string) {
   try {
@@ -27,7 +26,7 @@ function getTheme(storageKey: string) {
       colorScheme: colorschemes.includes(colorScheme) ? colorScheme : 'blue',
     }
   } catch {
-    return defaultTheme
+    return { colorScheme: 'blue', isDark: false }
   }
 }
 
@@ -91,6 +90,6 @@ export function createThemeStorage(storageKey: string) {
   return {
     subscribe: makeSubscribe(),
     getSnapshot: () => Object.assign(store, { setTheme }),
-    getServerSnapshot: () => ({ theme: defaultTheme, setTheme }),
+    getServerSnapshot: () => Object.assign(store, { setTheme }),
   }
 }
