@@ -50,8 +50,12 @@ export default async ({ children }: Props) => (
       </div>
       <footer className="mx-auto w-full max-w-screen-lg p-4">
         <span className="text-dn-foreground-100">
-          <FooterLink>&copy; {new Date().getFullYear()} GPL-3.0 LICENSE</FooterLink>{' '}
-          <FooterLink>Source Code</FooterLink>
+          <FooterLink href="https://www.gnu.org/licenses/gpl-3.0-standalone.html">
+            &copy; {new Date().getFullYear()} GPL-3.0 LICENSE
+          </FooterLink>{' '}
+          <FooterLink href="https://github.com/wadarco/wadarco.github.io">
+            Source Code
+          </FooterLink>
         </span>
       </footer>
       <ImageBackground />
@@ -59,10 +63,10 @@ export default async ({ children }: Props) => (
   </html>
 )
 
-const FooterLink = ({ children }: { children: React.ReactNode }) => (
+const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <a
     className="underline decoration-dn-border-200 underline-offset-4 hover:decoration-dn-border-100"
-    href="https://github.com/wadarco/wadarco.github.io"
+    href={href}
     target="_blank"
     rel="noreferrer"
   >
