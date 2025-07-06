@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ImageBackground } from './components/GrainyBackground.tsx'
 import Header from './components/Header.tsx'
-import ThemeScript from './lib/theme/ThemeScript.tsx'
+import preloadTheme from './lib/theme/ThemeScript.ts'
 import './globals.css'
 
 const geist = Geist({
@@ -32,7 +32,7 @@ export default async ({ children }: Props) => (
     lang="en"
     /* 
       suppressHydrationWarning: The `theme` class and `accent-color` 
-      attribute are dynamically updated by ThemeScript.
+      attribute are dynamically updated by `themeStorage`.
     */
     suppressHydrationWarning
   >
@@ -43,7 +43,7 @@ export default async ({ children }: Props) => (
         `${geist.variable} ${geist_mono.variable}`,
       )}
     >
-      <ThemeScript />
+      <script suppressHydrationWarning>{`(${preloadTheme})()`}</script>
       <div>
         <Header />
         <main className="mx-auto max-w-screen-lg px-4 py-8">{children}</main>

@@ -15,6 +15,11 @@ type SetState<T extends Theme> = (
 const getSystemPrefer = () =>
   typeof window === 'undefined' ? null : window.matchMedia('(prefers-color-scheme: dark)')
 
+function updateDOMTheme(theme: Theme) {
+  document.documentElement.classList.toggle('dark', theme.isDark)
+  document.documentElement.setAttribute('accent-color', theme.colorScheme)
+}
+
 export const getTheme = (storageKey: string): Theme => {
   try {
     const stringify = localStorage.getItem(storageKey) ?? '{}'
@@ -38,6 +43,7 @@ export function createThemeStorage(storageKey: string) {
 
   const emitChange = () => {
     store = { theme: getTheme(storageKey) }
+    updateDOMTheme(store.theme)
     for (const listener of listeners) listener()
   }
 

@@ -1,24 +1,6 @@
-'use client'
-
-import { useEffect } from 'react'
 import type { LocalStorageTheme } from './themeStorage.ts'
-import { useTheme } from './useTheme.ts'
 
-export default function ThemeScript() {
-  const { theme } = useTheme()
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme.isDark)
-  }, [theme.isDark])
-
-  useEffect(() => {
-    document.documentElement.setAttribute('accent-color', theme.colorScheme)
-  }, [theme.colorScheme])
-
-  return <script suppressHydrationWarning>{`(${preloadTheme})()`}</script>
-}
-
-const preloadTheme = () => {
+export default () => {
   const stringify = localStorage.getItem('theme') ?? '{}'
 
   try {
