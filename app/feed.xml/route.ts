@@ -14,15 +14,18 @@ export async function GET() {
     runtime.runPromise,
   )
   const feed = await runtime.runPromise(
-    Atom.make({
-      links: { self: '/atom.xml' },
-      entries: Chunk.toArray(posts).map((post) => ({
-        id: post.id,
-        title: post.data.title,
-        updated: post.data.updatedDate ?? post.data.pubDate,
-        content: renderToStaticMarkup(post.Content({})),
-      })),
-    }),
+    Effect.map(
+      Atom.make({
+        links: { self: '/atom.xml' },
+        entries: Chunk.toArray(posts).map((post) => ({
+          id: post.id,
+          title: post.data.title,
+          updated: post.data.updatedDate ?? post.data.pubDate,
+          content: renderToStaticMarkup(post.Content({})),
+        })),
+      }),
+      Atom.build,
+    ),
   )
 
   return new Response(feed, {
