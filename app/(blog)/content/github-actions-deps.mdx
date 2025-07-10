@@ -1,0 +1,123 @@
+---
+title: Keep dependencies up to date
+description: >
+  How to streamline development and CI dependencies with GitHub 
+  Actions and Nix flakes, automatically merging dependency updates
+  from Dependabot and GitHub Actions.
+pubDate: 2025-07-10
+---
+
+I find GitHub Actions relatively easy to use, but testing workflows locally is 
+hard, and the YAML syntax feels weird. The evaluation expressions make me think
+they should have just used Nix instead. That said, I don't have much experience
+with CI workflows and pipelines beyond GitHub Actions and Jenkins. While we 
+can't use Nix directly to define our workflows, we can run Nix in different ways
+within them.
+
+Managing dependencies across development and CI environments can be tedious, 
+especially when juggling multiple tools and package managers. While GitHub 
+Actions provides a solid automation platform, testing workflows locally remains
+challenging, as it uses an impure declarative approach.
+
+If you want to use Nix in CI, you'll likely find yourself manually updating the
+flake.lock file to keep up with development. There's an update-flake-lock action
+that automates this by creating a pull request instead of pushing changes
+directly. It's not a big deal, but since the action provides the
+`outputs.pull-request-url`, we probably want to use it to merge automatically
+using the GITHUB_TOKEN.
+
+Here's an example workflow that uses Nix along with update-flake-lock to update
+dependencies and merge the generated PR automatically:
+
+```yml filename=update-flake-lock.yml
+name: update-flake-lock
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      pr_url: ${{ steps.update-lock.outputs.pull-request-url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Update flake.lock
+        id: update-lock
+        uses: DeterminateSystems/update-flake-lock@main
+        with:
+          pr-title: "Update flake.lock"
+          pr-labels: |
+            dependencies
+            automated
+
+  squash-to-master:
+    needs: update
+    runs-on: ubuntu-latest
+    if: needs.update.outputs.pr_url != ''
+    steps:
+      - name: Merge Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ needs.update.outputs.pr_url }}
+        run: |
+          gh pr view "$PR_URL" --json author --jq '.author.login == "app/github-actions"' &&
+          gh pr merge "$PR_URL" --squash --delete-branch
+```
+
+For this workflow to run correctly, you need to enable
+Settings > Actions > General > Workflow permissions > Allow GitHub Actions to
+create and approve pull requests and set the permissions to Read and write.
+
+The workflow is simple: set up Nix, run update-flake-lock, and then—since the 
+update job is required by squash-to-master—we can reference the outputs.pr_url
+provided by the action to merge the pull request using the GitHub CLI and 
+`GITHUB_TOKEN`.
+
+Another approach is to use an auto-merge workflow, but be aware that workflows 
+cannot be triggered by pull requests created by other GitHub Actions
+[see discussion](https://github.com/orgs/community/discussions/65321).
+
+Now, what about dependencies outside of Nix, a package.json? I won't go into
+detail about Dependabot, but basically, it's a service that identifies outdated
+dependencies or vulnerabilities in your repository. However, Dependabot doesn't
+merge pull requests automatically either.
+
+Here's a workflow that merges pull requests created by both other actions and 
+Dependabot. As mentioned before, it cannot merge PRs made within the GitHub CLI.
+
+```yml filename=.github/workflows/auto-merge.yml
+name: auto merge
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  squash-to-master:
+    runs-on: ubuntu-latest
+    if: ${{ contains(fromJson('["dependabot[bot]", "github-actions[bot]"]'), github.actor) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Squash to master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{github.event.pull_request.html_url}}
+        run: |
+          echo "merging ${PR_URL}"
+          gh pr merge "$PR_URL" --squash --delete-branch
+```
