@@ -1,17 +1,15 @@
 import rehypeShiki, { type RehypeShikiOptions } from '@shikijs/rehype'
-import { Effect, pipe } from 'effect'
+import { Iterable } from 'effect'
 import type { Root } from 'hast'
 import type { Pluggable } from 'unified'
 import { visit } from 'unist-util-visit'
 
 const parseMetaString = (metaString: string) =>
-  pipe(
-    metaString.split(' '),
-    Effect.reduce({}, (acc, item) => {
-      const [k, v] = item.split('=')
-      return Effect.succeed(Object.assign(Object.create(acc), { [`data-${k}`]: v }))
-    }),
-  )
+  Iterable.reduce(metaString.split(' '), {} as Record<string, string>, (record, meta) => {
+    const [key, value] = meta.split('=')
+    record[`data-${key}`] = value
+    return record
+  })
 
 const addLanguageDataAttribute = () => (tree: Root) =>
   visit(tree, 'element', (node, _, parent) => {
@@ -38,7 +36,7 @@ const rehypeOptions: RehypeShikiOptions = {
     light: 'github-light',
     dark: 'github-dark-default',
   },
-  parseMetaString: (metaString) => Effect.runSync(parseMetaString(metaString)),
+  parseMetaString,
 }
 
 export const plugins = [
