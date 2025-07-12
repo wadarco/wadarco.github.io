@@ -1,34 +1,57 @@
 import { BunContext } from '@effect/platform-bun'
-import { Chunk, Effect, ManagedRuntime, Stream } from 'effect'
+import { Chunk, Config, Effect, ManagedRuntime, Stream } from 'effect'
 import * as Post from '~/(blog)/Post.ts'
 import * as Content from '~/content/Content.ts'
 import * as Atom from './atom.ts'
 
-export async function GET() {
-  const { renderToStaticMarkup } = await import('react-dom/server')
-  const runtime = ManagedRuntime.make(BunContext.layer)
-  const posts = await Content.make({ schema: Post.Post, source: Post.source }).pipe(
+const { renderToStaticMarkup } = await import('react-dom/server')
+
+const content = Content.make({
+  schema: Post.Post,
+  source: Post.source,
+})
+
+const makeFeed = Effect.gen(function* () {
+  const siteUrl = yield* Config.string('SITE_URL')
+
+  const posts = yield* content.pipe(
     Stream.mapEffect((post) => Effect.all({ ...post, id: Effect.succeed(post.id) })),
     Stream.runCollect,
     Effect.map(Chunk.sort(Post.order)),
-    runtime.runPromise,
-  )
-  const feed = await runtime.runPromise(
-    Effect.map(
-      Atom.make({
-        links: { self: '/atom.xml' },
-        entries: Chunk.toArray(posts).map((post) => ({
-          id: post.id,
-          title: post.data.title,
-          updated: post.data.updatedDate ?? post.data.pubDate,
-          content: renderToStaticMarkup(post.Content({})),
-        })),
-      }),
-      Atom.build,
-    ),
+    Effect.map(Chunk.toReadonlyArray),
   )
 
-  return new Response(feed, {
+  const entries = posts.map((post) => ({
+    id: post.id,
+    title: post.data.title,
+    updated: post.data.updatedDate ?? post.data.pubDate,
+    content: renderToStaticMarkup(post.Content({})),
+  }))
+
+  return Atom.make({
+    title: yield* Config.string('METADATA_TITLE'),
+    subtitle: yield* Config.string('METADATA_DESCRIPTION'),
+    link: [{ _href: '/atom.xml', _rel: 'self' }, { _href: siteUrl }],
+    updated: entries[0].updated,
+    author: {
+      name: yield* Config.string('AUTHOR_NAME'),
+      email: yield* Config.string('AUTHOR_EMAIL'),
+    },
+    entry: entries.map((entry) => ({
+      id: entry.id,
+      title: entry.title,
+      link: { _href: `${siteUrl}/${entry.id}` },
+      updated: entry.updated,
+      content: { _type: 'text/html', '#text': `${entry.content}\n` },
+    })),
+  })
+})
+
+export async function GET() {
+  const feed = Effect.map(makeFeed, Atom.build)
+  const runtime = ManagedRuntime.make(BunContext.layer)
+
+  return new Response(await runtime.runPromise(feed), {
     headers: {
       'Content-Type': 'application/atom+xml; charset=utf-8',
     },
