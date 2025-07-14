@@ -17,11 +17,11 @@ export default async function PostsPage() {
   return (
     <div>
       <h1 className="pb-8 font-semibold text-3xl">Blog posts</h1>
-      <ul className="flex flex-col gap-4">
+      <ul className="flex flex-col gap-8 md:gap-4">
         {posts.map(({ id, data }) => (
           <li key={id}>
             <Link href={`/${id}`}>
-              <article className="rounded-lg border border-dn-border-100 p-4 hover:bg-dn-background-100">
+              <article className="rounded-md border-dn-border-100 hover:bg-dn-background-100 md:border md:p-4">
                 <time
                   className="text-dn-foreground-100 text-sm"
                   dateTime={data.pubDate.toDateString()}
@@ -31,7 +31,7 @@ export default async function PostsPage() {
                   })}
                 </time>
 
-                <h3 className="text-xl">{data.title}</h3>
+                <h3 className="mb-2 text-xl">{data.title}</h3>
                 <p className="text-dn-foreground-100">{data.description}</p>
               </article>
             </Link>
