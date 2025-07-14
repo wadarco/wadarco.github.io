@@ -19,7 +19,7 @@ export async function ImageBackground() {
     <div className="pointer-events-none fixed top-0 right-0 z-50 h-full w-full">
       <div
         style={{ maskImage: `url(${base64})` }}
-        className="mask-repeat mask-contain h-full w-full bg-current bg-repeat opacity-6"
+        className="mask-contain h-full w-full bg-current bg-repeat opacity-9"
       />
     </div>
   )
