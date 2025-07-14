@@ -19,7 +19,7 @@
     "@biomejs/biome": "2.0.6",
     "@cloudinary/url-gen": "^1.21.0",
     "@effect/platform": "^0.87.10",
-    "@effect/platform-bun": "^0.72.14",
+    "@effect/platform-bun": "^0.73.0",
     "@shikijs/rehype": "^3.7.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.16",
