@@ -16,7 +16,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.6",
+    "@biomejs/biome": "2.1.1",
     "@cloudinary/url-gen": "^1.21.0",
     "@effect/platform": "^0.87.10",
     "@effect/platform-bun": "^0.72.14",
