@@ -28,7 +28,7 @@ const HomePage = () => (
         <span>Learning </span>
         <Link href="https://effect.website/">Effect-TS.</Link>
       </li>
-      <li>Reading 20th Century Boys</li>
+      <li>Reading Structure and Interpretation of Computer Programs</li>
       <li>
         <span>Playing Type Lumina: </span>
         <Link href="https://meltyblood.typelumina.com/resources/img/command/meltyblood_typelumina_neco-arc_command_lists_en.pdf">
