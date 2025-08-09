@@ -2,7 +2,7 @@ import { FetchHttpClient } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
 import { Effect } from 'effect'
 import NextImage from 'next/image'
-import { Cloudinary, Image, Loader } from '~/lib/image'
+import { Cloudinary, Image, Loader } from '~/lib/images'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string

@@ -1,6 +1,6 @@
 import { BunContext } from '@effect/platform-bun'
 import { Effect, pipe } from 'effect'
-import { Image, Loader } from '~/lib/image'
+import { Image, Loader } from '~/lib/images'
 
 export async function ImageBackground() {
   /**
