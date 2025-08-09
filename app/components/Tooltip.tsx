@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { useId } from 'react'
 
 type TooltipPosition = 'top' | 'right' | 'bottom' | 'left'
 
@@ -13,6 +14,8 @@ export default function Tooltip({
   content,
   position = 'bottom',
 }: TooltipProps) {
+  const tooltipId = useId()
+
   const baseStyles = clsx([
     '-translate-x-1/2 pointer-events-none invisible absolute z-50 flex w-fit',
     'whitespace-nowrap rounded-md border border-dn-border-200 p-2 opacity-0',
@@ -31,8 +34,15 @@ export default function Tooltip({
 
   return (
     <span className="group relative">
-      {children}
-      <span className={`${baseStyles} ${positionStyles[position]}`}>{content}</span>
+      <span aria-describedby={tooltipId}>{children}</span>
+      <span
+        id={tooltipId}
+        className={`${baseStyles} ${positionStyles[position]}`}
+        role="tooltip"
+        aria-hidden="true"
+      >
+        {content}
+      </span>
     </span>
   )
 }
