@@ -1,2 +1,3 @@
-export * from './Cloudinary.ts'
-export * from './Image.ts'
+export * as Cloudinary from './Cloudinary.ts'
+export * as Image from './Image.ts'
+export * as Loader from './Loader.ts'

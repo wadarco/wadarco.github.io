@@ -2,7 +2,7 @@ import { FetchHttpClient } from '@effect/platform'
 import { BunContext } from '@effect/platform-bun'
 import { Effect } from 'effect'
 import NextImage from 'next/image'
-import * as Image from '~/lib/image'
+import { Cloudinary, Image, Loader } from '~/lib/image'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string
@@ -10,18 +10,19 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   priority?: boolean
 }
 
-export default async function ClounaryImage({ src: id, ...props }: Props) {
-  const options = { width: Number(props.width), height: Number(props.height) }
-  const { src, metadata } = await Image.fromCloudinary(id, options).pipe(
-    Effect.flatMap((img) =>
-      Effect.all(
-        {
-          src: Image.getUrl(img),
-          metadata: Image.getMetadata(img),
-        },
-        { batching: true },
-      ),
-    ),
+export default async function ClounaryImage({ src: id, height, width, ...props }: Props) {
+  const task = Effect.gen(function* () {
+    const cloudinary = yield* Cloudinary.getImageUrl({ id, height, width })
+    const loader = Loader.fromUrl(cloudinary)
+    const image = yield* Image.fromLoader(loader)
+
+    return yield* Effect.all({
+      src: Image.getUrl(image),
+      metadata: Image.getMetadata(image),
+    })
+  })
+
+  const { src, metadata } = await task.pipe(
     Effect.provide(BunContext.layer),
     Effect.provide(FetchHttpClient.layer),
     Effect.runPromise,
@@ -30,6 +31,7 @@ export default async function ClounaryImage({ src: id, ...props }: Props) {
   if (!metadata.width || !metadata.height) {
     throw new Error('Failed to read image metadata')
   }
+
   return (
     <NextImage
       {...props}

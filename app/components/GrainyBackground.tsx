@@ -1,6 +1,6 @@
 import { BunContext } from '@effect/platform-bun'
-import { Effect } from 'effect'
-import * as Image from '~/lib/image/Image.ts'
+import { Effect, pipe } from 'effect'
+import { Image, Loader } from '~/lib/image'
 
 export async function ImageBackground() {
   /**
@@ -9,7 +9,8 @@ export async function ImageBackground() {
    * from the runtime (Node.js/Bun)
    */
   const url = new global.URL('../assets/grainy-background.svg', import.meta.url)
-  const base64 = await Image.fromFile(url.pathname).pipe(
+  const base64 = await pipe(
+    Image.fromLoader(Loader.fromFile(url.pathname)),
     Effect.flatMap(Image.getBase64Url),
     Effect.provide(BunContext.layer),
     Effect.runPromise,
