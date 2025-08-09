@@ -8,7 +8,11 @@ interface TooltipProps {
   position?: TooltipPosition
 }
 
-export function Tooltip({ children, content, position = 'bottom' }: TooltipProps) {
+export default function Tooltip({
+  children,
+  content,
+  position = 'bottom',
+}: TooltipProps) {
   const baseStyles = clsx([
     '-translate-x-1/2 pointer-events-none invisible absolute z-50 flex w-fit',
     'whitespace-nowrap rounded-md border border-dn-border-200 p-2 opacity-0',
