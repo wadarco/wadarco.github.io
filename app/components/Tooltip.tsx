@@ -7,12 +7,14 @@ interface TooltipProps {
   children: React.ReactNode
   content: React.ReactNode
   position?: TooltipPosition
+  delay?: number
 }
 
 export default function Tooltip({
   children,
   content,
   position = 'bottom',
+  delay = 300,
 }: TooltipProps) {
   const tooltipId = useId()
 
@@ -38,6 +40,7 @@ export default function Tooltip({
       <span
         id={tooltipId}
         className={`${baseStyles} ${positionStyles[position]}`}
+        style={{ transitionDelay: `${delay}ms` }}
         role="tooltip"
         aria-hidden="true"
       >
