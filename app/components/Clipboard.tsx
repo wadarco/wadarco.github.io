@@ -3,7 +3,7 @@
 import clsx from 'clsx'
 import { ClipboardCheckIcon, ClipboardIcon } from 'lucide-react'
 import { type MouseEventHandler, type RefObject, useRef, useState } from 'react'
-import Button from '~/components/ui/Button'
+import Button from '~/components/Button.tsx'
 
 interface Props {
   contentElRef: RefObject<Element | null>

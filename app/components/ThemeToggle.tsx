@@ -3,7 +3,7 @@
 import { type LucideProps, MoonIcon, SunIcon } from 'lucide-react'
 import type { MouseEventHandler, SVGProps } from 'react'
 import { useTheme } from '~/lib/theme/useTheme.ts'
-import Button from './ui/Button.tsx'
+import Button from './Button.tsx'
 
 type ThemeToggleProps = SVGProps<SVGSVGElement> & LucideProps
 

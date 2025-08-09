@@ -1,8 +1,8 @@
 import { RssIcon } from 'lucide-react'
 import Link from 'next/link'
+import Button from './Button.tsx'
 import ThemeToggle from './ThemeToggle.tsx'
 import Tooltip from './Tooltip.tsx'
-import Button from './ui/Button.tsx'
 
 export default function Header() {
   return (
