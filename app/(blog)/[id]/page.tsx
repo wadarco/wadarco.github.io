@@ -2,7 +2,7 @@ import { BunContext } from '@effect/platform-bun'
 import { Chunk, Effect, ManagedRuntime, Stream } from 'effect'
 import type { Metadata } from 'next'
 import ClounaryImage from '~/components/ClounaryImage.tsx'
-import CodeBlock from '~/components/CodeBlock.tsx'
+import CodeBlock from '~/components/code-block/CodeBlock.tsx'
 import * as Post from '../Post.ts'
 
 type Props = {
