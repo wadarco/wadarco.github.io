@@ -1,4 +1,5 @@
 import { BunContext } from '@effect/platform-bun'
+import clsx from 'clsx'
 import { Effect, pipe } from 'effect'
 import { Image, Loader } from '~/lib/images'
 
@@ -17,11 +18,13 @@ export async function ImageBackground() {
   )
 
   return (
-    <div className="pointer-events-none fixed top-0 right-0 z-50 h-full w-full">
-      <div
-        style={{ maskImage: `url(${base64})` }}
-        className="mask-contain h-full w-full bg-current bg-repeat opacity-9"
-      />
-    </div>
+    <div
+      className={clsx(
+        'pointer-events-none fixed top-0 right-0 z-50 h-full w-full',
+        'after:mask-contain after:block after:h-full after:w-full after:bg-current',
+        'after:bg-repeat after:opacity-9',
+      )}
+      style={{ maskImage: `url(${base64})` }}
+    />
   )
 }
