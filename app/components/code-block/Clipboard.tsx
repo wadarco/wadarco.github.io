@@ -1,101 +1,73 @@
 'use client'
 
-import clsx from 'clsx'
 import { ClipboardCheckIcon, ClipboardIcon } from 'lucide-react'
-import { type MouseEventHandler, type RefObject, useRef, useState } from 'react'
-import Button from '~/components/Button.tsx'
+import { type ReactNode, type RefObject, useRef, useState } from 'react'
 
 interface Props {
-  contentElRef: RefObject<Element | null>
+  contentRef: RefObject<Element | null>
+  children: (icon: ReactNode) => ReactNode
 }
 
-function useClipboard({ contentElRef }: Props) {
-  const [isActive, setIsActive] = useState(false)
-  const [isAnimating, setIsAnimating] = useState(false)
+type AnimationState = 'idle' | 'copying' | 'success'
+
+export default function CopyToClipboard(props: Props) {
+  const [animationState, setAnimationState] = useState<AnimationState>('idle')
   const iconRef = useRef<HTMLDivElement>(null)
-  const keyframes = [
-    { transform: 'scale(1)', opacity: '1' },
-    { transform: 'scale(0.5)', opacity: '0' },
-  ]
+  const isSuccess = animationState === 'success'
 
-  const animateIcon = async (reverse = false) => {
-    await iconRef.current?.animate(reverse ? keyframes.slice().reverse() : keyframes, {
-      duration: 100,
-    }).finished
+  const animateIcon = async (reverse = false): Promise<void> => {
+    if (!iconRef.current) return
+
+    const keyframes = [
+      { transform: 'scale(1)', opacity: '1' },
+      { transform: 'scale(0.5)', opacity: '0' },
+    ]
+
+    const animation = iconRef.current.animate(
+      reverse ? keyframes.slice().reverse() : keyframes,
+      { duration: 100 },
+    )
+
+    await animation.finished
   }
 
-  const copyToClipboard = async () => {
-    const content = contentElRef.current?.textContent
-    if (isAnimating || !content) return
+  const handleCopy = async () => {
+    const textContent = props.contentRef.current?.textContent
+    if (textContent) {
+      Promise.try(async () => navigator.clipboard.writeText(textContent))
+    }
 
-    navigator.clipboard.writeText(content)
-    setIsAnimating(true)
+    if (animationState === 'idle') {
+      setAnimationState('copying')
 
-    await animateIcon().then(() => setIsActive(true))
-    await animateIcon(true)
-    await new Promise((resolve) => setTimeout(resolve, 1900))
-    await animateIcon().then(() => setIsActive(false))
-    await animateIcon(true).then(() => setIsAnimating(false))
+      await animateIcon().then(() => setAnimationState('success'))
+      await animateIcon(true)
+      await new Promise((resolve) => setTimeout(resolve, 1900))
+      await animateIcon().then(() => setAnimationState('idle'))
+      await animateIcon(true)
+    }
   }
 
-  return { isActive, isAnimating, iconRef, copyToClipboard }
-}
-
-function Base({
-  isActive,
-  ref,
-}: {
-  isActive: boolean
-  ref: RefObject<HTMLElement | null>
-}) {
   return (
-    <figure ref={ref} className={clsx(isActive && 'text-dn-primary-200')}>
-      {isActive ? (
-        <ClipboardCheckIcon width="16" height="16" />
-      ) : (
-        <ClipboardIcon width="16" height="16" />
-      )}
-    </figure>
-  )
-}
-
-export function CopyToClipboardInline({ contentElRef }: Props) {
-  const { isActive, iconRef, copyToClipboard } = useClipboard({ contentElRef })
-
-  return (
-    <Button
-      variant="ghost"
-      onClick={copyToClipboard}
-      className="cursor-pointer rounded p-2 hover:bg-dn-background-100"
+    <div
+      role="img"
+      className={`cursor-pointer ${isSuccess ? 'text-dn-primary-200' : 'text-current'}`}
+      aria-label={isSuccess ? 'Content copied!' : 'Copy content to clipboard'}
+      title={isSuccess ? 'Copied!' : 'Copy to clipboard'}
+      onClick={handleCopy}
+      onKeyDown={undefined}
     >
-      <Base isActive={isActive} ref={iconRef} />
-    </Button>
-  )
-}
-
-export function CopyToClipboardAbsolute({ contentElRef }: Props) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [timer, setTimer] = useState<Timer>()
-  const { isActive, iconRef, copyToClipboard } = useClipboard({ contentElRef })
-
-  const onClick: MouseEventHandler<HTMLButtonElement> = () => {
-    clearTimeout(timer)
-    setIsVisible(true)
-    copyToClipboard()
-    setTimer(setTimeout(() => setIsVisible(false), 4000))
-  }
-
-  return (
-    <Button
-      variant="outline"
-      className={clsx(
-        'absolute top-0 right-0 m-2 flex overflow-hidden rounded-md border',
-        'bg-dn-background-200/40 group-hover:visible',
-        !isVisible && 'invisible',
+      {props.children(
+        <div ref={iconRef} aria-hidden="true">
+          {isSuccess ? (
+            <ClipboardCheckIcon width="16" height="16" />
+          ) : (
+            <ClipboardIcon width="16" height="16" />
+          )}
+        </div>,
       )}
-      onClick={onClick}
-    >
-      <Base ref={iconRef} isActive={isActive} />
-    </Button>
+    </div>
   )
 }
+
+export function CopyToClipboardInline() {}
