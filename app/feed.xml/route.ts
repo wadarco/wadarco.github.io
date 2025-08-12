@@ -1,7 +1,7 @@
 import { BunContext } from '@effect/platform-bun'
 import { Chunk, Config, Effect, ManagedRuntime, Stream } from 'effect'
 import * as Post from '~/(blog)/Post.ts'
-import * as Content from '~/content/Content.ts'
+import * as Content from '~/lib/content/Content.ts'
 import * as Atom from './atom.ts'
 
 const { renderToStaticMarkup } = await import('react-dom/server')
