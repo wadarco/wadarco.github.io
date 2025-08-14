@@ -48,7 +48,7 @@ export default async function PostPage({ params }: Props) {
           alt={data.title}
         />
       )}
-      <section className="prose lg:prose-lg mx-auto my-8 ">
+      <section className="prose lg:prose-lg mx-auto my-8">
         <time
           className="mt-0 text-dn-foreground-100"
           dateTime={data.pubDate.toDateString()}
