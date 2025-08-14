@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
 
   "vcs": {
     "enabled": true,
@@ -26,19 +26,7 @@
           "options": { "functions": ["clsx"] }
         }
       },
-      "suspicious": { "useAwait": "error", "noConsole": "warn" },
-      "style": {
-        "noParameterAssign": "error",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error"
-      }
+      "suspicious": { "useAwait": "error", "noConsole": "warn" }
     }
   },
   "javascript": {
