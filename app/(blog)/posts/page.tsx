@@ -1,17 +1,20 @@
 import { BunContext } from '@effect/platform-bun'
 import { Chunk, Effect, Stream } from 'effect'
 import Link from 'next/link'
-import * as Post from '../Post.ts'
+import { Collection } from '~/lib/content'
+import { postCollection, postOrder } from '../Post.ts'
 
 export default async function PostsPage() {
-  const posts = await Effect.runPromise(
-    Post.content.pipe(
-      Stream.flatMap(({ id, data }) => Effect.all({ id: Effect.succeed(id), data })),
-      Stream.runCollect,
-      Effect.map(Chunk.sort(Post.order)),
-      Effect.map(Chunk.toArray),
-      Effect.provide(BunContext.layer),
+  const posts = await Collection.getAll(postCollection).pipe(
+    Stream.mapEffect(
+      (entry) => Effect.all({ id: Effect.succeed(entry.id), data: entry.data }),
+      { concurrency: 'unbounded' },
     ),
+    Stream.runCollect,
+    Effect.map(Chunk.sort(postOrder)),
+    Effect.map(Chunk.toArray),
+    Effect.provide(BunContext.layer),
+    Effect.runPromise,
   )
 
   return (

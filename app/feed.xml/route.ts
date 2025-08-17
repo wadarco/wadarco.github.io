@@ -1,32 +1,40 @@
 import { BunContext } from '@effect/platform-bun'
-import { Chunk, Config, Effect, ManagedRuntime, Stream } from 'effect'
-import * as Post from '~/(blog)/Post.ts'
-import * as Content from '~/lib/content/Content.ts'
+import { Chunk, Config, Effect, ManagedRuntime, Order, Stream } from 'effect'
+import { Collection, Entry } from '~/lib/content'
+import { postCollection } from '../(blog)/Post.ts'
 import * as Atom from './atom.ts'
 
 const { renderToStaticMarkup } = await import('react-dom/server')
 
-const content = Content.make({
-  schema: Post.Post,
-  source: Post.source,
-})
+const postOrder = Order.mapInput(
+  Order.reverse(Order.Date),
+  (post: { updated: Date }) => post.updated,
+)
 
 const makeFeed = Effect.gen(function* () {
   const siteUrl = yield* Config.string('SITE_URL')
-
-  const posts = yield* content.pipe(
-    Stream.mapEffect((post) => Effect.all({ ...post, id: Effect.succeed(post.id) })),
-    Stream.runCollect,
-    Effect.map(Chunk.sort(Post.order)),
-    Effect.map(Chunk.toReadonlyArray),
+  const posts = Collection.getAll(postCollection).pipe(
+    Stream.mapEffect(
+      (entry) =>
+        Effect.all({
+          id: Effect.succeed(entry.id),
+          data: entry.data,
+          Content: Effect.sync(() => Entry.render(entry).Content),
+        }),
+      { concurrency: 'unbounded' },
+    ),
   )
 
-  const entries = posts.map((post) => ({
+  const entries = yield* Stream.map(posts, (post) => ({
     id: post.id,
     title: post.data.title,
     updated: post.data.updatedDate ?? post.data.pubDate,
     content: renderToStaticMarkup(post.Content({})),
-  }))
+  })).pipe(
+    Stream.runCollect,
+    Effect.map(Chunk.sort(postOrder)),
+    Effect.map(Chunk.toReadonlyArray),
+  )
 
   return Atom.make({
     title: yield* Config.string('METADATA_TITLE'),

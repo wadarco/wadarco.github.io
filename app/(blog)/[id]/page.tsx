@@ -1,9 +1,10 @@
 import { BunContext } from '@effect/platform-bun'
-import { Chunk, Effect, ManagedRuntime, Stream } from 'effect'
+import { Chunk, Effect, ManagedRuntime, Option, Stream } from 'effect'
 import type { Metadata } from 'next'
 import ClounaryImage from '~/components/ClounaryImage.tsx'
 import CodeBlock from '~/components/code-block/CodeBlock.tsx'
-import * as Post from '../Post.ts'
+import { Collection, Entry } from '~/lib/content'
+import { postCollection } from '../Post.ts'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -12,7 +13,7 @@ type Props = {
 const runtime = ManagedRuntime.make(BunContext.layer)
 
 export const generateStaticParams = () =>
-  Post.content.pipe(
+  Collection.getAll(postCollection).pipe(
     Stream.map(({ id }) => ({ id })),
     Stream.runCollect,
     Effect.map(Chunk.toArray),
@@ -21,18 +22,23 @@ export const generateStaticParams = () =>
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
-  return runtime.runPromise(
-    Post.get(params.id).pipe(
-      Effect.flatMap((_) => _.data),
-      Effect.map(({ title, description }) => ({ title, description })),
-    ),
+
+  return Collection.get(postCollection, params.id).pipe(
+    Effect.map(Option.getOrThrow),
+    Effect.flatMap(({ data }) => data),
+    Effect.map(({ title, description }) => ({ title, description })),
+    runtime.runPromise,
   )
 }
 
 export default async function PostPage({ params }: Props) {
   const { id } = await params
-  const [data, Content] = await Post.get(id).pipe(
-    Effect.flatMap((post) => Effect.all([post.data, post.Content])),
+
+  const { Content, data } = await Collection.get(postCollection, id).pipe(
+    Effect.map(Option.getOrThrow),
+    Effect.flatMap((entry) =>
+      Effect.map(entry.data, (data) => ({ data, ...Entry.render(entry) })),
+    ),
     runtime.runPromise,
   )
 
