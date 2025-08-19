@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 import { BunContext } from '@effect/platform-bun'
-import { Effect, Layer, ManagedRuntime, Option, Schema } from 'effect'
+import { Chunk, Effect, Layer, ManagedRuntime, Option, Schema, Stream } from 'effect'
 import * as Collection from '../Collection.ts'
 import * as Loader from '../Loader.ts'
 import { fileSystemMock } from '../mock/filesystem.ts'
@@ -22,7 +22,10 @@ describe('content:collection', () => {
   })
 
   test('collection:getAll', async () => {
-    const result = await runtime.runPromise(Collection.getAll(mockCollection))
-    expect(result).toBeArrayOfSize(1)
+    const result = await Collection.getAll(mockCollection).pipe(
+      Stream.runCollect,
+      runtime.runPromise,
+    )
+    expect(Chunk.toArray(result)).toBeArrayOfSize(1)
   })
 })
