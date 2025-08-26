@@ -27,7 +27,7 @@
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "babel-plugin-react-compiler": "^19.0.0-beta-714736e-20250131",
-    "effect": "^3.17.7",
+    "effect": "^3.17.9",
     "fast-xml-parser": "^5.2.5",
     "lefthook": "^1.12.3",
     "mdx-bundler": "^10.1.1",
