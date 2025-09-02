@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
-    "@cloudinary/url-gen": "^1.21.0",
+    "@cloudinary/url-gen": "^1.22.0",
     "@effect/platform": "^0.90.6",
     "@effect/platform-bun": "^0.79.0",
     "@shikijs/rehype": "^3.11.0",
