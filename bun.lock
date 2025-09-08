@@ -22,7 +22,7 @@
         "@types/react": "^19.1.12",
         "@types/react-dom": "^19.1.7",
         "babel-plugin-react-compiler": "^19.0.0-beta-714736e-20250131",
-        "effect": "^3.17.10",
+        "effect": "^3.17.13",
         "fast-xml-parser": "^5.2.5",
         "lefthook": "^1.12.3",
         "mdx-bundler": "^10.1.1",
@@ -480,7 +480,7 @@
 
     "eastasianwidth": ["eastasianwidth@0.2.0", "", {}, "sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA=="],
 
-    "effect": ["effect@3.17.10", "", { "dependencies": { "@standard-schema/spec": "^1.0.0", "fast-check": "^3.23.1" } }, "sha512-CF88II9feS/adKbaW+2yyVg75O2gN6TIIuRslVtND9DQR1kYFOqFImgDuhsfg2goEAOJEOYTuNautT5ICyMbxA=="],
+    "effect": ["effect@3.17.13", "", { "dependencies": { "@standard-schema/spec": "^1.0.0", "fast-check": "^3.23.1" } }, "sha512-JMz5oBxs/6mu4FP9Csjub4jYMUwMLrp+IzUmSDVIzn2NoeoyOXMl7x1lghfr3dLKWffWrdnv/d8nFFdgrHXPqw=="],
 
     "emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 
