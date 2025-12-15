@@ -29,7 +29,7 @@
     "babel-plugin-react-compiler": "^19.0.0-beta-714736e-20250131",
     "effect": "^3.19.9",
     "fast-xml-parser": "^5.3.2",
-    "lefthook": "^2.0.9",
+    "lefthook": "^2.0.12",
     "mdx-bundler": "^10.1.1",
     "msw": "^2.12.4",
     "serve": "^14.2.5",
